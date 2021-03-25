@@ -6,3 +6,5 @@ router.get('/map/reverse-geocode', (req, res) => {
         test: 'asd'
     })
 });
+
+module.exports = router;
