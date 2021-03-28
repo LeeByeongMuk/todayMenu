@@ -11,7 +11,7 @@ router.get('/test', (req, res) => {
     res.send({
         test: true
     })
-})
+});
 
 router.get('/map/geocode', (req, res) => {
     const query = req.query;
