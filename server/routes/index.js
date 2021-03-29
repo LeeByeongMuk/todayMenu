@@ -18,10 +18,9 @@ router.get('/map/geocode', (req, res) => {
 
     const params = {
         method: 'get',
-        url: 'https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode',
+        url: 'https://dapi.kakao.com/v2/local/search/address.json',
         headers: {
-            'X-NCP-APIGW-API-KEY-ID': process.env.REACT_APP_NCLOUD_CLIENT_ID,
-            'X-NCP-APIGW-API-KEY': process.env.REACT_APP_NCLOUD_CLIENT_SECRET
+            'Authorization': `KakaoAK ${process.env.REACT_APP_KAKAO_REST_API_KEY}`
         },
         qs: {
             query: query.address
@@ -32,10 +31,10 @@ router.get('/map/geocode', (req, res) => {
         const data = JSON.parse(body);
         let result = {};
 
-        if (data.status === 'OK') {
+        if (data.documents) {
             result = {
                 success: true,
-                addresses: data.addresses
+                addresses: data.documents
             };
         } else {
             result = {

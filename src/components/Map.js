@@ -21,7 +21,7 @@ const AddressSection = styled.article`
 const AddressInput = styled.input`
     width: 100%;
     height: 30px;
-    padding-left: 10px;
+    padding-left: 15px;
     font-size: 16px;
     color: #333;
     box-sizing: border-box;
@@ -35,7 +35,7 @@ const AddressList = styled.ul`
     left: 0;
     z-index: 10000;
     width: 100%;
-    height: 100px;
+    max-height: 200px;
     border: 1px solid black;
     background: #fff;
     box-sizing: border-box;
@@ -63,8 +63,8 @@ export default class Map extends React.Component {
 
         this.state = {
             addresses: [],
-            lat: '37.3595704',
-            lng: '127.105399'
+            lat: '33.450701',
+            lng: '126.570667'
         }
 
         this.addressChange = this.addressChange.bind(this);
@@ -74,7 +74,7 @@ export default class Map extends React.Component {
     }
 
     loadCDN(callback) {
-        let url = `https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env.REACT_APP_NCLOUD_CLIENT_ID}`;
+        let url = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_JS_KEY}&autoload=false`;
 
         let element = document.createElement('script');
         element.async = true;
@@ -85,7 +85,7 @@ export default class Map extends React.Component {
             callback();
         }
 
-        document.body.appendChild(element);
+        document.head.appendChild(element);
     }
 
     removeCDN() {
@@ -115,6 +115,7 @@ export default class Map extends React.Component {
         })
         .then(res => res.json())
         .then(res => {
+            console.log(res);
             this.setState({
                 addresses: res.addresses
             });
@@ -136,15 +137,15 @@ export default class Map extends React.Component {
 
     initMap() {
         this.loadCDN(() => {
-            this.map = new window.naver.maps.Map('map', {
-                center: new window.naver.maps.LatLng(this.state.lat, this.state.lng),
-                zoom: 17
-            });
+            window.kakao.maps.load(() => {
+                let container = document.getElementById('map');
+                let options = {
+                    center: new window.kakao.maps.LatLng(this.state.lat, this.state.lng),
+                    zoom: 10
+                }
 
-            // this.marker = new window.naver.maps.Marker({
-            //     position: new window.naver.maps.LatLng(this.state.lat, this.state.lng),
-            //     map: this.map
-            // });
+                this.map = new window.kakao.maps.Map(container, options);
+            });
         });
     }
 
@@ -172,7 +173,7 @@ export default class Map extends React.Component {
                                     data-lat={address.y}
                                     data-lng={address.x}
                                     onClick={this.setMap}>
-                                    {address.jibunAddress}
+                                    {address.address_name}
                                 </AddressListItem>
                             )
                         })}
