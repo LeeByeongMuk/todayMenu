@@ -130,7 +130,7 @@ export default class Map extends React.Component {
             lng: target.dataset.lng,
             addresses: []
         }, () => {
-            const latlng = new window.naver.maps.LatLng(this.state.lat, this.state.lng);
+            const latlng = new window.kakao.maps.LatLng(this.state.lat, this.state.lng);
             this.map.setCenter(latlng);
         });
     }
