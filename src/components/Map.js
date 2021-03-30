@@ -59,7 +59,7 @@ export default class Map extends React.Component {
         super(props);
 
         this.map = null;
-        this.marker = null;
+        this.ps = null;
 
         this.state = {
             addresses: [],
@@ -71,10 +71,13 @@ export default class Map extends React.Component {
         this.getAddresses = this.getAddresses.bind(this);
         this.getAddresses = debounce(this.getAddresses, 1000);
         this.setMap = this.setMap.bind(this);
+        this.getMenu = this.getMenu.bind(this);
+        this.placesSearchCB = this.placesSearchCB.bind(this);
+        this.displayMarker = this.displayMarker.bind(this);
     }
 
     loadCDN(callback) {
-        let url = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_JS_KEY}&autoload=false`;
+        let url = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_JS_KEY}&autoload=false&libraries=services`;
 
         let element = document.createElement('script');
         element.async = true;
@@ -115,7 +118,6 @@ export default class Map extends React.Component {
         })
         .then(res => res.json())
         .then(res => {
-            console.log(res);
             this.setState({
                 addresses: res.addresses
             });
@@ -132,7 +134,42 @@ export default class Map extends React.Component {
         }, () => {
             const latlng = new window.kakao.maps.LatLng(this.state.lat, this.state.lng);
             this.map.setCenter(latlng);
+            this.getMenu();
         });
+    }
+
+    getMenu() {
+        this.ps = new window.kakao.maps.services.Places(this.map);
+        this.ps.categorySearch('FD6', this.placesSearchCB, {useMapBounds:true});
+    }
+
+    placesSearchCB(data, status, pagination) {
+        if (status === window.kakao.maps.services.Status.OK) {
+            for (var i=0; i < data.length; i++) {
+                this.displayMarker(data[i]);
+            }
+        }
+    }
+
+    displayMarker(place) {
+        let marker = new window.kakao.maps.Marker({
+            map: this.map,
+            position: new window.kakao.maps.LatLng(place.y, place.x),
+            clickable: true
+        });
+
+        let infowindow = new window.kakao.maps.InfoWindow({
+            content: place.place_name,
+            iwRemoveable: true
+        });
+
+        window.kakao.maps.event.addListener(marker, 'click', this.makeOverListener(this.map, marker, infowindow));
+    }
+
+    makeOverListener(map, marker, infowindow) {
+        return function() {
+            infowindow.open(map, marker);
+        };
     }
 
     initMap() {
