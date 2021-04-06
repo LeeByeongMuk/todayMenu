@@ -49,7 +49,7 @@ class Map extends React.Component {
                 let container = document.getElementById('map');
                 let options = {
                     center: new window.kakao.maps.LatLng(this.props.lat, this.props.lng),
-                    zoom: 10
+                    level: 1
                 }
 
                 this.map = new window.kakao.maps.Map(container, options);
@@ -84,8 +84,8 @@ class Map extends React.Component {
         });
 
         let infowindow = new window.kakao.maps.InfoWindow({
-            content: place.place_name,
-            iwRemoveable: true
+            content: `<div style="padding: 10px 25px 10px 10px">${place.place_name}</div>`,
+            removable: true
         });
 
         window.kakao.maps.event.addListener(marker, 'click', this.makeOverListener(this.map, marker, infowindow));

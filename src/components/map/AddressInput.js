@@ -19,6 +19,8 @@ class AddressInput extends React.Component {
         return (
             <Input type="text"
                 name="address"
+                autoComplete="off"
+                placeholder="주소를 입력해 주세요."
                 defaultValue={this.props.address}
                 onChange={this.props.addressChange} />
         )
