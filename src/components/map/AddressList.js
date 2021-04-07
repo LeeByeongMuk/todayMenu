@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { PageColor, White, BorderColor } from '../../styles/variable.js';
 
 const List = styled.ul`
     display: ${props => props.visibility ? 'block' : 'none'};
@@ -10,8 +11,8 @@ const List = styled.ul`
     z-index: 10000;
     width: 100%;
     max-height: 200px;
-    border: 1px solid black;
-    background: #fff;
+    border: 1px solid ${BorderColor};
+    background: ${White};
     box-sizing: border-box;
 `;
 
@@ -23,16 +24,12 @@ const ListItem = styled.li`
 
     &:hover {
         text-decoration: underline;
-        background: #2a3b4b;
-        color: #fff;
+        background: ${PageColor};
+        color: ${White};
     }
 `;
 
 class AddressList extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         return (
             <List visibility={this.props.addresses.length > 0 ? 1 : 0}>

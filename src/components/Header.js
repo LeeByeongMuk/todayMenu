@@ -1,17 +1,18 @@
 import styled from 'styled-components';
+import { PageColor, White } from '../styles/variable.js';
 
 const HeaderWrapper = styled.header`
     display: flex;
     align-items: center;
     height: 60px;
     padding: 0 25px;
-    background: #2a3b4b;
+    background: ${PageColor};
 `;
 
 const Title = styled.h1`
     font-weight: bold;
     font-size: 24px;
-    color: #ffffff
+    color: ${White}
 `;
 
 function Header() {

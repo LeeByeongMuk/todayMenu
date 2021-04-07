@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { ResetBox } from '../../styles/grid.js';
 
 import AddressInput from './AddressInput.js';
 import AddressList from './AddressList.js';
@@ -8,7 +9,7 @@ import Map from './Map.js';
 import debounce from '../../util/debounce.js';
 
 const Container = styled.section`
-    overflow: hidden;
+    ${ResetBox}
     padding: 50px 20px;
 `;
 
