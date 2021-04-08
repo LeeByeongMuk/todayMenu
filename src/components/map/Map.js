@@ -65,12 +65,12 @@ class Map extends React.Component {
 
     getMenu() {
         this.ps = new window.kakao.maps.services.Places(this.map);
-        this.ps.categorySearch('FD6', this.placesSearchCB, {useMapBounds:true});
+        this.ps.categorySearch('FD6', this.placesSearchCB, {useMapBounds: true});
     }
 
     placesSearchCB(data, status, pagination) {
         if (status === window.kakao.maps.services.Status.OK) {
-            for (var i=0; i < data.length; i++) {
+            for (let i = 0; i < data.length; i++) {
                 this.displayMarker(data[i]);
             }
         }
@@ -92,13 +92,17 @@ class Map extends React.Component {
     }
 
     makeOverListener(map, marker, infowindow) {
-        return function() {
+        return function () {
             infowindow.open(map, marker);
         };
     }
 
     componentDidMount() {
         this.initMap();
+    }
+
+    shouldComponentUpdate() {
+        return false;
     }
 
     componentWillMount() {

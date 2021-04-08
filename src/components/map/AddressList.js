@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { PageColor, White, BorderColor } from '../../styles/variable.js';
+import {PageColor, White, BorderColor} from '../../styles/variable.js';
 
 const List = styled.ul`
     display: ${props => props.visibility ? 'block' : 'none'};
@@ -30,20 +30,35 @@ const ListItem = styled.li`
 `;
 
 class AddressList extends React.Component {
+    shouldComponentUpdate(nextProps, nextState) {
+        if (this.props.addresses.length === 0 &&
+            nextProps.addresses.length === 0) {
+            return false;
+        }
+
+        return true;
+    }
+
     render() {
+        let listItem = null;
+
+        if (this.props.addresses.length > 0) {
+            listItem = this.props.addresses.map((address, index) => {
+                return (
+                    <ListItem
+                        key={index}
+                        data-lat={address.y}
+                        data-lng={address.x}
+                        onClick={this.props.setMap}>
+                        {address.address_name}
+                    </ListItem>
+                );
+            });
+        }
+
         return (
             <List visibility={this.props.addresses.length > 0 ? 1 : 0}>
-                { this.props.addresses.map((address, index) => {
-                    return (
-                        <ListItem
-                            key={index}
-                            data-lat={address.y}
-                            data-lng={address.x}
-                            onClick={this.props.setMap}>
-                            {address.address_name}
-                        </ListItem>
-                    )
-                })}
+                {listItem}
             </List>
         )
     }

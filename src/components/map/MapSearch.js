@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { ResetBox } from '../../styles/grid.js';
+import {ResetBox} from '../../styles/grid.js';
 
 import AddressInput from './AddressInput.js';
 import AddressList from './AddressList.js';
@@ -9,7 +9,7 @@ import Map from './Map.js';
 import debounce from '../../util/debounce.js';
 
 const Container = styled.section`
-    ${ResetBox}
+    ${ResetBox};
     padding: 50px 20px;
 `;
 
@@ -24,6 +24,9 @@ class MapSearch extends React.Component {
         this.state = {
             address: '',
             addresses: [],
+            searchStatus: false,
+            searchMessage: '',
+            placeholder: '주소를 입력해 주세요.',
             lat: '33.450701',
             lng: '126.570667'
         }
@@ -51,12 +54,22 @@ class MapSearch extends React.Component {
                 'Accept': 'application/json'
             }
         })
-        .then(res => res.json())
-        .then(res => {
-            this.setState({
-                addresses: res.addresses
+            .then(res => res.json())
+            .then(res => {
+                let message = '',
+                    status = false;
+
+                if (res.addresses.length === 0) {
+                    message = '검색 결과가 없습니다.';
+                    status = true;
+                }
+
+                this.setState({
+                    addresses: res.addresses,
+                    searchStatus: status,
+                    searchMessage: message
+                });
             });
-        });
     }
 
     setMap(event) {
@@ -75,17 +88,19 @@ class MapSearch extends React.Component {
         return (
             <Container>
                 <AddressSection>
-                    <AddressInput type="text"
-                        address={this.state.address}
-                        addressChange={this.addressChange.bind(this)} />
+                    <AddressInput address={this.state.address}
+                                  placeholder={this.state.placeholder}
+                                  searchStatus={this.state.searchStatus}
+                                  searchMessage={this.state.searchMessage}
+                                  addressChange={this.addressChange.bind(this)}/>
 
                     <AddressList addresses={this.state.addresses}
-                        setMap={this.setMap.bind(this)} />
+                                 setMap={this.setMap.bind(this)}/>
                 </AddressSection>
 
                 <Map ref={this.map}
-                    lat={this.state.lat}
-                    lng={this.state.lng} />
+                     lat={this.state.lat}
+                     lng={this.state.lng}/>
             </Container>
         )
     }
