@@ -1,4 +1,4 @@
-import { BorderColor, FontColor } from './variable.js';
+import {BorderColor, FontColor} from './variable.js';
 import styled from 'styled-components';
 
 export const Input = styled.input`

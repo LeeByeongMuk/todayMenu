@@ -1,9 +1,9 @@
-import { css } from 'styled-components';
+import {css} from 'styled-components';
 
 export const ResetBox = css`
     &:after {
         content: '';
-		display: block;
-		clear: both;
+        display: block;
+        clear: both;
     }
 `;

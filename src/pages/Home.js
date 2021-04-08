@@ -6,7 +6,7 @@ class Home extends React.Component {
     render() {
         return (
             <React.Fragment>
-                <MapSearch />
+                <MapSearch/>
             </React.Fragment>
         )
     }
