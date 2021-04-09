@@ -15,11 +15,11 @@ const SearchMessage = styled.div`
 
 class AddressInput extends React.Component {
     shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.searchStatus) { // 검색 결과가 없을 때 re render
-            return true;
+        if (this.props.address === nextProps.address) {
+            return false;
         }
 
-        return false;
+        return true;
     }
 
     render() {

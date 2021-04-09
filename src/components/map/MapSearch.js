@@ -33,8 +33,16 @@ class MapSearch extends React.Component {
 
         this.map = React.createRef();
 
+        this.dataChange = this.dataChange.bind(this);
+        this.addressChange = this.addressChange.bind(this);
         this.getAddresses = this.getAddresses.bind(this);
         this.getAddresses = debounce(this.getAddresses, 1000);
+    }
+
+    dataChange(name, data) {
+        this.setState({
+            [name]: data
+        });
     }
 
     addressChange(event) {
@@ -45,7 +53,8 @@ class MapSearch extends React.Component {
         if (!value) return false;
 
         const params = new URLSearchParams({
-            address: value
+            address: value,
+            radius: 500
         });
 
         fetch(`${process.env.REACT_APP_API_URL}/api/map/geocode?${params}`, {
@@ -61,7 +70,6 @@ class MapSearch extends React.Component {
 
                 if (res.addresses.length === 0) {
                     message = '검색 결과가 없습니다.';
-                    status = true;
                 }
 
                 this.setState({
@@ -92,7 +100,7 @@ class MapSearch extends React.Component {
                                   placeholder={this.state.placeholder}
                                   searchStatus={this.state.searchStatus}
                                   searchMessage={this.state.searchMessage}
-                                  addressChange={this.addressChange.bind(this)}/>
+                                  addressChange={this.addressChange}/>
 
                     <AddressList addresses={this.state.addresses}
                                  setMap={this.setMap.bind(this)}/>
@@ -100,7 +108,8 @@ class MapSearch extends React.Component {
 
                 <Map ref={this.map}
                      lat={this.state.lat}
-                     lng={this.state.lng}/>
+                     lng={this.state.lng}
+                     dataChange={this.dataChange}/>
             </Container>
         )
     }
