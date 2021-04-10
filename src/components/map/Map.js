@@ -14,6 +14,7 @@ class Map extends React.Component {
         this.map = null;
         this.ps = null;
         this.geocoder = null;
+        this.markers = [];
 
         this.getCurrentLocation = this.getCurrentLocation.bind(this);
         this.setMap = this.setMap.bind(this);
@@ -60,6 +61,11 @@ class Map extends React.Component {
                 this.geocoder = new window.kakao.maps.services.Geocoder();
 
                 this.getCurrentLocation();
+
+                window.kakao.maps.event.addListener(this.map, 'dragend', () => {
+                    this.getMenu();
+                    this.searchAddrFromCoords(this.map.getCenter());
+                });
             });
         });
     }
@@ -72,8 +78,8 @@ class Map extends React.Component {
                 let locPosition = new window.kakao.maps.LatLng(lat, lng);
 
                 this.map.setCenter(locPosition);
-
-                this.searchAddrFromCoords(this.map.getCenter())
+                this.getMenu();
+                this.searchAddrFromCoords(this.map.getCenter());
             };
 
             const error = (err) => {
@@ -90,6 +96,11 @@ class Map extends React.Component {
         }
     }
 
+    searchAddrFromCoords(coords) {
+        // 좌표로 행정동 주소 정보를 요청합니다
+        this.geocoder.coord2RegionCode(coords.getLng(), coords.getLat(), this.displayCenterInfo);
+    }
+
     setMap() {
         const latlng = new window.kakao.maps.LatLng(this.props.lat, this.props.lng);
         this.map.setCenter(latlng);
@@ -98,16 +109,17 @@ class Map extends React.Component {
 
     getMenu() {
         this.ps = new window.kakao.maps.services.Places(this.map);
-        this.ps.categorySearch('FD6', this.placesSearchCB, {useMapBounds: true});
-    }
-
-    searchAddrFromCoords(coords) {
-        // 좌표로 행정동 주소 정보를 요청합니다
-        this.geocoder.coord2RegionCode(coords.getLng(), coords.getLat(), this.displayCenterInfo);
+        this.ps.categorySearch('FD6', this.placesSearchCB, {
+            radius: 500,
+            useMapCenter: true,
+            useMapBounds: true
+        });
     }
 
     placesSearchCB(data, status) {
         if (status === window.kakao.maps.services.Status.OK) {
+            this.clearMarkers(); // 기존 마커 제거
+
             for (let i = 0; i < data.length; i++) {
                 const place = data[i];
                 let locPosition = new window.kakao.maps.LatLng(place.y, place.x);
@@ -115,6 +127,14 @@ class Map extends React.Component {
                 this.displayMarker(locPosition, place.place_name);
             }
         }
+    }
+
+    clearMarkers() {
+        for (let i = 0; i < this.markers.length; i++) {
+            this.markers[i].setMap(null);
+        }
+
+        this.markers = [];
     }
 
     displayMarker(locPosition, message) {
@@ -130,6 +150,7 @@ class Map extends React.Component {
         });
 
         window.kakao.maps.event.addListener(marker, 'click', this.makeOverListener(this.map, marker, infowindow));
+        this.markers.push(marker);
     }
 
     displayCenterInfo(result, status) {

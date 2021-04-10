@@ -53,8 +53,7 @@ class MapSearch extends React.Component {
         if (!value) return false;
 
         const params = new URLSearchParams({
-            address: value,
-            radius: 500
+            address: value
         });
 
         fetch(`${process.env.REACT_APP_API_URL}/api/map/geocode?${params}`, {
