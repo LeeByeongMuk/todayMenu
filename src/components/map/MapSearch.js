@@ -6,7 +6,9 @@ import AddressInput from './AddressInput.js';
 import AddressList from './AddressList.js';
 import Map from './Map.js';
 
-import debounce from '../../util/debounce.js';
+import {fetchGeocode} from "../../api/mapApi";
+
+import debounce from '../../util/debounce.js'
 
 const Container = styled.section`
     ${ResetBox};
@@ -49,34 +51,32 @@ class MapSearch extends React.Component {
         this.getAddresses(event.target.value);
     }
 
-    getAddresses(value) {
+    async getAddresses(value) {
         if (!value) return false;
 
-        const params = new URLSearchParams({
+        const params = {
             address: value
-        });
+        };
 
-        fetch(`${process.env.REACT_APP_API_URL}/api/map/geocode?${params}`, {
-            method: 'get',
-            headers: {
-                'Accept': 'application/json'
+        const response = await fetchGeocode(params);
+
+        if (response.success) {
+            const addresses = response.data.addresses;
+            let message = '',
+                status = false;
+
+            if (addresses.length === 0) {
+                message = '검색 결과가 없습니다.';
             }
-        })
-            .then(res => res.json())
-            .then(res => {
-                let message = '',
-                    status = false;
 
-                if (res.addresses.length === 0) {
-                    message = '검색 결과가 없습니다.';
-                }
-
-                this.setState({
-                    addresses: res.addresses,
-                    searchStatus: status,
-                    searchMessage: message
-                });
+            this.setState({
+                addresses: addresses,
+                searchStatus: status,
+                searchMessage: message
             });
+        } else {
+            console.log('오류');
+        }
     }
 
     setMap(event) {
