@@ -3,16 +3,13 @@ const request = async (url, options) => {
         const response = await fetch(url, options);
         const data = await response.json();
 
-        console.log(data);
-
-
         if (response.ok) {
             return data;
         } else {
             throw data;
         }
     } catch(e) {
-        throw {
+        return {
             message: e.message,
             status: e.status
         }

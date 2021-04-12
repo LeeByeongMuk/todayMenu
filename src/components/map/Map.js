@@ -119,12 +119,14 @@ class Map extends React.Component {
     placesSearchCB(data, status) {
         if (status === window.kakao.maps.services.Status.OK) {
             this.clearMarkers(); // 기존 마커 제거
+            const randomKey = Math.floor(Math.random() * data.length);
 
             for (let i = 0; i < data.length; i++) {
                 const place = data[i];
                 let locPosition = new window.kakao.maps.LatLng(place.y, place.x);
+                const visible = (randomKey === i);
 
-                this.displayMarker(locPosition, place.place_name);
+                this.displayMarker(locPosition, place.place_name, visible);
             }
         }
     }
@@ -137,12 +139,14 @@ class Map extends React.Component {
         this.markers = [];
     }
 
-    displayMarker(locPosition, message) {
+    displayMarker(locPosition, message, visible) {
         let marker = new window.kakao.maps.Marker({
             map: this.map,
             position: locPosition,
             clickable: true
         });
+
+        marker.setVisible(visible);
 
         let infowindow = new window.kakao.maps.InfoWindow({
             content: `<div style="padding: 10px 25px 10px 10px">${message}</div>`,
