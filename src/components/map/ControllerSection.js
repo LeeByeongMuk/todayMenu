@@ -12,11 +12,19 @@ import {ResetBox} from '../../styles/grid.js';
 
 // styled components
 const Layout = styled.section`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
     position: absolute;
     top: 60px;
     left: 0;
     z-index: 1000;
-    width: 400px;
+    height: calc(100vh - 60px);
+`;
+
+const ControllerWrapper = styled.aside`
+    display: ${props => props.visibility ? 'block' : 'none'};
+    width: ${props => props.visibility ? '400px' : '0'};
     height: 100%;
     padding: 25px 15px;
     border: 1px solid black;
@@ -34,14 +42,29 @@ const ButtonWrapper = styled.section`
     margin-top: 12px;
 `;
 
+const ButtonFold = styled.button`
+    position: absolute;
+    right: -24px;
+    width: 24px;
+    height: 50px;
+    background: deepskyblue;
+`;
+
 class ControllerSection extends React.Component {
     geocoder = null;
 
     state = {
+        showSection: true,
         address: '',
         searchResult: [],
         placeholder: '주소를 입력해 주세요.'
     };
+
+    toggleSection = () => {
+        this.setState((state) => ({
+            showSection: !state.showSection
+        }));
+    }
 
     // 주소 검색창 데이터 수정 이벤트
     changeAddress = (event) => {
@@ -109,24 +132,30 @@ class ControllerSection extends React.Component {
     render() {
         return (
             <Layout>
-                <AddressSection>
-                    {/*검색창*/}
-                    <SearchInput address={this.state.address}
-                                 placeholder={this.state.placeholder}
-                                 changeAddress={this.changeAddress}
-                                 getSearchResult={this.getSearchResult}/>
+                <ControllerWrapper visibility={this.state.showSection ? 1 : 0}>
+                    <AddressSection>
+                        {/*검색창*/}
+                        <SearchInput address={this.state.address}
+                                     placeholder={this.state.placeholder}
+                                     changeAddress={this.changeAddress}
+                                     getSearchResult={this.getSearchResult}/>
 
-                    {/*검색 결과*/}
-                    <SearchResult searchResult={this.state.searchResult}
-                                  changeLatLng={this.changeLatLng}/>
-                </AddressSection>
+                        {/*검색 결과*/}
+                        <SearchResult searchResult={this.state.searchResult}
+                                      changeLatLng={this.changeLatLng}/>
+                    </AddressSection>
 
-                <ButtonWrapper>
-                    <button type="button"
-                            onClick={this.props.changeMarker}>다른 식당 검색</button>
-                    <button type="button"
-                            onClick={this.props.resetLocation}>위치 재설정</button>
-                </ButtonWrapper>
+                    <ButtonWrapper>
+                        <button type="button"
+                                onClick={this.props.changeMarker}>다른 식당 검색</button>
+                        <button type="button"
+                                onClick={this.props.resetLocation}>위치 재설정</button>
+                    </ButtonWrapper>
+                </ControllerWrapper>
+
+                <ButtonFold type="button" onClick={this.toggleSection}>
+                    {this.state.showSection ? '<' : '>'}
+                </ButtonFold>
             </Layout>
         );
     }
