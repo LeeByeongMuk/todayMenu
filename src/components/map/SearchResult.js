@@ -4,20 +4,18 @@ import {PageColor, White, BorderColor} from '../../styles/variable.js';
 
 const List = styled.ul`
     display: ${props => props.visibility ? 'block' : 'none'};
-    overflow-y: scroll;
     position: absolute;
-    top: 29px;
+    top: 39px;
     left: 0;
     z-index: 10000;
     width: 100%;
-    max-height: 200px;
     border: 1px solid ${BorderColor};
     background: ${White};
     box-sizing: border-box;
 `;
 
 const ListItem = styled.li`
-    padding: 5px 0 5px 20px;
+    padding: 5px 0 5px 10px;
     font-size: 16px;
     line-height: 20px;
     cursor: pointer;
@@ -29,10 +27,10 @@ const ListItem = styled.li`
     }
 `;
 
-class AddressList extends React.Component {
+class SearchResult extends React.Component {
     shouldComponentUpdate(nextProps, nextState) {
-        if (this.props.addresses.length === 0 &&
-            nextProps.addresses.length === 0) {
+        if (this.props.searchResult.length === 0 &&
+            nextProps.searchResult.length === 0) {
             return false;
         }
 
@@ -42,14 +40,14 @@ class AddressList extends React.Component {
     render() {
         let listItem = null;
 
-        if (this.props.addresses.length > 0) {
-            listItem = this.props.addresses.map((address, index) => {
+        if (this.props.searchResult.length > 0) {
+            listItem = this.props.searchResult.map((address, index) => {
                 return (
                     <ListItem
                         key={index}
                         data-lat={address.y}
                         data-lng={address.x}
-                        onClick={this.props.setMap}>
+                        onClick={this.props.changeLatLng}>
                         {address.address_name}
                     </ListItem>
                 );
@@ -57,11 +55,11 @@ class AddressList extends React.Component {
         }
 
         return (
-            <List visibility={this.props.addresses.length > 0 ? 1 : 0}>
+            <List visibility={this.props.searchResult.length > 0 ? 1 : 0}>
                 {listItem}
             </List>
         )
     }
 }
 
-export default AddressList;
+export default SearchResult;

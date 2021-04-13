@@ -2,13 +2,11 @@ import React from 'react';
 import styled from 'styled-components';
 import {ResetBox} from '../../styles/grid.js';
 
-import AddressInput from './AddressInput.js';
-import AddressList from './AddressList.js';
+import SearchInput from './SearchInput.js';
+import SearchResult from './SearchResult.js';
 import Map from './Map.js';
 
 import {fetchGeocode} from "../../api/mapApi";
-
-import debounce from '../../util/debounce.js'
 
 const Container = styled.section`
     ${ResetBox};
@@ -19,7 +17,7 @@ const AddressSection = styled.article`
     position: relative;
 `;
 
-class MapSearch extends React.Component {
+class Copy extends React.Component {
     constructor(props) {
         super(props);
 
@@ -38,7 +36,7 @@ class MapSearch extends React.Component {
         this.dataChange = this.dataChange.bind(this);
         this.addressChange = this.addressChange.bind(this);
         this.getAddresses = this.getAddresses.bind(this);
-        this.getAddresses = debounce(this.getAddresses, 1000);
+        this.setCenter = this.setCenter.bind(this);
     }
 
     dataChange(name, data) {
@@ -48,7 +46,9 @@ class MapSearch extends React.Component {
     }
 
     addressChange(event) {
-        this.getAddresses(event.target.value);
+        this.setState({
+            address: event.target.value
+        });
     }
 
     async getAddresses(value) {
@@ -79,6 +79,10 @@ class MapSearch extends React.Component {
         }
     }
 
+    setCenter() {
+        console.log(this.map.current.getCenter());
+    }
+
     setMap(event) {
         const target = event.target;
 
@@ -95,15 +99,18 @@ class MapSearch extends React.Component {
         return (
             <Container>
                 <AddressSection>
-                    <AddressInput address={this.state.address}
-                                  placeholder={this.state.placeholder}
-                                  searchStatus={this.state.searchStatus}
-                                  searchMessage={this.state.searchMessage}
-                                  addressChange={this.addressChange}/>
+                    <SearchInput address={this.state.address}
+                                 placeholder={this.state.placeholder}
+                                 searchStatus={this.state.searchStatus}
+                                 searchMessage={this.state.searchMessage}
+                                 addressChange={this.addressChange}/>
 
-                    <AddressList addresses={this.state.addresses}
-                                 setMap={this.setMap.bind(this)}/>
+                    <SearchResult addresses={this.state.addresses}
+                                  setMap={this.setMap.bind(this)}/>
                 </AddressSection>
+
+                <button type="button">위치 재설정</button>
+                <button type="button">다른 식당 검색</button>
 
                 <Map ref={this.map}
                      lat={this.state.lat}
@@ -114,4 +121,4 @@ class MapSearch extends React.Component {
     }
 }
 
-export default MapSearch;
+export default Copy;

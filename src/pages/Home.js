@@ -1,13 +1,11 @@
 import React from 'react';
 
-import MapSearch from '../components/map/MapSearch.js';
+import MapLayout from '../components/map/MapLayout.js';
 
 class Home extends React.Component {
     render() {
         return (
-            <React.Fragment>
-                <MapSearch/>
-            </React.Fragment>
+            <MapLayout/>
         )
     }
 }

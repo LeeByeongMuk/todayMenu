@@ -2,30 +2,21 @@ import React from 'react';
 import styled from 'styled-components';
 
 const MapContainer = styled.article`
-    width: 100%;
-    height: 400px;
-    margin-top: 20px;
+  width: 100%;
+  height: 400px;
+  margin-top: 20px;
 `;
 
 class Map extends React.Component {
-    constructor(props) {
-        super(props);
+    map = null;
+    ps = null;
+    markers = [];
 
-        this.map = null;
-        this.ps = null;
-        this.geocoder = null;
-        this.markers = [];
-
-        this.getCurrentLocation = this.getCurrentLocation.bind(this);
-        this.setMap = this.setMap.bind(this);
-        this.getMenu = this.getMenu.bind(this);
-        this.searchAddrFromCoords = this.searchAddrFromCoords.bind(this);
-        this.placesSearchCB = this.placesSearchCB.bind(this);
-        this.displayMarker = this.displayMarker.bind(this);
-        this.displayCenterInfo = this.displayCenterInfo.bind(this);
+    state = {
+        markerKey: ''
     }
 
-    loadCDN(callback) {
+    loadCDN = (callback) => {
         let url = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_JS_KEY}&autoload=false&libraries=services`;
 
         let element = document.createElement('script');
@@ -40,7 +31,7 @@ class Map extends React.Component {
         document.head.appendChild(element);
     }
 
-    removeCDN() {
+    removeCDN = () => {
         let element = document.getElementById('map-cdn');
 
         if (element) {
@@ -48,38 +39,44 @@ class Map extends React.Component {
         }
     }
 
-    initMap() {
+    initMap = () => {
         this.loadCDN(() => {
             window.kakao.maps.load(() => {
                 let container = document.getElementById('map');
                 let options = {
-                    center: new window.kakao.maps.LatLng(this.props.lat, this.props.lng),
-                    level: 2
+                    center: new window.kakao.maps.LatLng(this.props.center.lat, this.props.center.lng),
+                    level: this.props.level
                 }
 
                 this.map = new window.kakao.maps.Map(container, options);
-                this.geocoder = new window.kakao.maps.services.Geocoder();
 
                 this.getCurrentLocation();
 
+                // center event 등록
                 window.kakao.maps.event.addListener(this.map, 'dragend', () => {
-                    this.getMenu();
-                    this.searchAddrFromCoords(this.map.getCenter());
+                    const latlng = this.map.getCenter();
+                    this.props.changeCenter(latlng.Ma, latlng.La);
                 });
             });
         });
     }
 
-    getCurrentLocation() {
+    setCenter = (lat, lng) => {
+        let locPosition = new window.kakao.maps.LatLng(lat, lng);
+        this.props.changeLatLng(lat, lng);
+        this.map.setCenter(locPosition);
+
+        this.getMenu();
+    }
+
+    // geolocation 작업
+    getCurrentLocation = () => {
         if (navigator.geolocation) {
             const success = (position) => {
                 let lat = position.coords.latitude,
                     lng = position.coords.longitude;
-                let locPosition = new window.kakao.maps.LatLng(lat, lng);
 
-                this.map.setCenter(locPosition);
-                this.getMenu();
-                this.searchAddrFromCoords(this.map.getCenter());
+                this.setCenter(lat, lng);
             };
 
             const error = (err) => {
@@ -96,27 +93,21 @@ class Map extends React.Component {
         }
     }
 
-    searchAddrFromCoords(coords) {
-        // 좌표로 행정동 주소 정보를 요청합니다
-        this.geocoder.coord2RegionCode(coords.getLng(), coords.getLat(), this.displayCenterInfo);
-    }
-
-    setMap() {
-        const latlng = new window.kakao.maps.LatLng(this.props.lat, this.props.lng);
-        this.map.setCenter(latlng);
-        this.getMenu();
-    }
-
-    getMenu() {
-        this.ps = new window.kakao.maps.services.Places(this.map);
-        this.ps.categorySearch('FD6', this.placesSearchCB, {
+    // 카테고리 검색 기능
+    getMenu = () => {
+        // TODO: 개선 필요
+        let option = {
             radius: 500,
             useMapCenter: true,
             useMapBounds: true
-        });
+        }
+
+        this.ps = new window.kakao.maps.services.Places(this.map);
+        this.ps.categorySearch('FD6', this.placesSearchCB, option);
     }
 
-    placesSearchCB(data, status) {
+    // 카테고리 검색 callback
+    placesSearchCB = (data, status) => {
         if (status === window.kakao.maps.services.Status.OK) {
             this.clearMarkers(); // 기존 마커 제거
             const randomKey = Math.floor(Math.random() * data.length);
@@ -131,15 +122,18 @@ class Map extends React.Component {
         }
     }
 
+    // 마커 초기화
     clearMarkers() {
         for (let i = 0; i < this.markers.length; i++) {
-            this.markers[i].setMap(null);
+            this.markers[i].marker.setMap(null);
+            this.markers[i].infowindow.close();
         }
 
         this.markers = [];
     }
 
-    displayMarker(locPosition, message, visible) {
+    // 마커 등록
+    displayMarker = (locPosition, message, visible) => {
         let marker = new window.kakao.maps.Marker({
             map: this.map,
             position: locPosition,
@@ -149,37 +143,53 @@ class Map extends React.Component {
         marker.setVisible(visible);
 
         let infowindow = new window.kakao.maps.InfoWindow({
-            content: `<div style="padding: 10px 25px 10px 10px">${message}</div>`,
-            removable: true
+            content: `<div style="padding: 10px 15px">${message}</div>`
         });
 
-        window.kakao.maps.event.addListener(marker, 'click', this.makeOverListener(this.map, marker, infowindow));
-        this.markers.push(marker);
-    }
-
-    displayCenterInfo(result, status) {
-        if (status === window.kakao.maps.services.Status.OK) {
-            for (let i = 0; i < result.length; i++) {
-                // 행정동의 region_type 값은 'H' 이므로
-                if (result[i].region_type === 'H') {
-                    this.props.dataChange('address', result[i].address_name);
-                    break;
-                }
-            }
+        if (visible) {
+            infowindow.open(this.map, marker);
         }
+
+        this.markers.push({
+            visible: visible,
+            marker: marker,
+            infowindow: infowindow
+        });
     }
 
-    makeOverListener(map, marker, infowindow) {
-        return function () {
-            infowindow.open(map, marker);
-        };
+    randomMarker() {
+        const visibleMarker = this.markers.filter(marker => marker.visible)[0];
+
+        if (visibleMarker) {
+            const markerIndex = this.markers.indexOf(visibleMarker);
+
+            visibleMarker.marker.setMap(null);
+            visibleMarker.infowindow.close();
+            this.markers.splice(markerIndex, 1);
+        }
+
+        if (this.markers.length > 0) {
+            const randomKey = Math.floor(Math.random() * this.markers.length);
+
+            this.markers[randomKey].visible = true;
+            this.markers[randomKey].marker.setVisible(true);
+            this.markers[randomKey].infowindow.open(this.map, this.markers[randomKey].marker);
+        }
     }
 
     componentDidMount() {
         this.initMap();
     }
 
-    shouldComponentUpdate() {
+    shouldComponentUpdate(nextProps, nextState) {
+        // TODO: 추후 개선
+        if ((this.props.lat !== nextProps.lat ||
+            this.props.lng !== nextProps.lng) &&
+            (this.props.lat !== this.props.center.lat ||
+            this.props.lng !== this.props.center.lng)) {
+            this.setCenter(nextProps.lat, nextProps.lng);
+        }
+
         return false;
     }
 
