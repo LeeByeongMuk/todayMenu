@@ -1,6 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
 
+import { PageColor, FontColor } from '../../styles/variable.js';
+
 const MapContainer = styled.article`
     width: 100%;
     height: calc(100vh - 60px);
@@ -126,7 +128,7 @@ class Map extends React.Component {
                 let locPosition = new window.kakao.maps.LatLng(place.y, place.x);
                 const visible = (randomKey === i);
 
-                this.displayMarker(locPosition, place.place_name, visible);
+                this.displayMarker(locPosition, place, visible);
             }
         }
     }
@@ -142,7 +144,7 @@ class Map extends React.Component {
     }
 
     // 마커 등록
-    displayMarker = (locPosition, message, visible) => {
+    displayMarker = (locPosition, place, visible) => {
         let marker = new window.kakao.maps.Marker({
             map: this.map,
             position: locPosition,
@@ -151,8 +153,16 @@ class Map extends React.Component {
 
         marker.setVisible(visible);
 
+        const content = `<div style="max-width: 280px;padding: 5px 10px;font-size14px; line-height: 24px; ${FontColor};text-align: center;word-break: keep-all">
+            <a href="${place.place_url}" style="font-weight: bold; font-size: 16px; color: ${PageColor}" target="_blank">
+                ${place.place_name}
+            </a><br>
+            
+            <p>주소: ${place.address_name}</p>
+        </div>`;
+
         let infowindow = new window.kakao.maps.InfoWindow({
-            content: `<div style="padding: 10px 15px">${message}</div>`
+            content: content
         });
 
         if (visible) {
