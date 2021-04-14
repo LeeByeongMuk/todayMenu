@@ -41,16 +41,16 @@ class Map extends React.Component {
 
     initMap = () => {
         this.loadCDN(() => {
-            window.kakao.maps.load(() => {
+            window.kakao.maps.load(async () => {
                 let container = document.getElementById('map');
+                const latlng = await this.getCurrentLocation();
                 let options = {
-                    center: new window.kakao.maps.LatLng(this.props.center.lat, this.props.center.lng),
+                    center: latlng,
                     level: this.props.level
-                }
+                };
 
                 this.map = new window.kakao.maps.Map(container, options);
-
-                this.getCurrentLocation();
+                this.getMenu();
 
                 // center event 등록
                 window.kakao.maps.event.addListener(this.map, 'dragend', () => {
@@ -70,27 +70,36 @@ class Map extends React.Component {
     }
 
     // geolocation 작업
-    getCurrentLocation = () => {
+    getCurrentLocation = async () => {
+        let lat, lng;
+
         if (navigator.geolocation) {
-            const success = (position) => {
-                let lat = position.coords.latitude,
-                    lng = position.coords.longitude;
-
-                this.setCenter(lat, lng);
-            };
-
-            const error = (err) => {
-                console.log(err);
-            };
-
-            const options = {
-                enableHighAccuracy: true,
-                timeout: 5000,
-                maximumAge: 0
+            try {
+                const position = await this.getCurrentPosition();
+                lat = position.coords.latitude;
+                lng = position.coords.longitude;
+            } catch(e) {
+                lat = this.props.center.lat;
+                lng = this.props.center.lng;
             }
-
-            navigator.geolocation.getCurrentPosition(success, error, options);
+        } else {
+            lat = this.props.center.lat;
+            lng = this.props.center.lng;
         }
+
+        return new window.kakao.maps.LatLng(lat, lng);
+    }
+
+    getCurrentPosition = () => {
+        const options = {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0
+        }
+
+        return new Promise((resolve, reject) => {
+            navigator.geolocation.getCurrentPosition(resolve, reject, options);
+        })
     }
 
     // 카테고리 검색 기능
@@ -183,10 +192,8 @@ class Map extends React.Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         // TODO: 추후 개선
-        if ((this.props.lat !== nextProps.lat ||
-            this.props.lng !== nextProps.lng) &&
-            (this.props.lat !== this.props.center.lat ||
-            this.props.lng !== this.props.center.lng)) {
+        if (this.props.lat !== nextProps.lat ||
+            this.props.lng !== nextProps.lng) {
             this.setCenter(nextProps.lat, nextProps.lng);
         }
 
