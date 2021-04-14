@@ -52,6 +52,7 @@ class Map extends React.Component {
 
                 this.map = new window.kakao.maps.Map(container, options);
                 this.props.changeLatLng(latlng.Ma, latlng.La);
+                this.props.changeCenter(latlng.Ma, latlng.La);
                 this.getMenu();
 
                 // center event 등록
@@ -207,12 +208,11 @@ class Map extends React.Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        // TODO: 추후 개선
-        if (!this.map && (this.props.lat !== nextProps.lat ||
-            this.props.lng !== nextProps.lng)) {
+        if ((this.props.lat !== nextProps.lat ||
+            this.props.lng !== nextProps.lng) &&
+            (this.props.lat !== this.props.center.lat ||
+            this.props.lng !== this.props.center.lng)) {
             this.setCenter(nextProps.lat, nextProps.lng);
-
-            return false;
         }
 
         if (this.props.showSection !== nextProps.showSection) {

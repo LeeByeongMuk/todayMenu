@@ -35,11 +35,7 @@ class MapSearch extends React.Component {
     changeLatLng = (lat, lng) => {
         this.setState({
             lat: lat,
-            lng: lng,
-            center: {
-                lat: lat,
-                lng: lng
-            }
+            lng: lng
         });
     }
 
