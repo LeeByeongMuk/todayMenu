@@ -23,7 +23,7 @@ class MapSearch extends React.Component {
             lat: '33.450701',
             lng: '126.570667'
         },
-        level: 2
+        level: 3
     }
 
     toggleSection = () => {

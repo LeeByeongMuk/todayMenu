@@ -38,8 +38,6 @@ class SearchInput extends React.Component {
     onSearchSubmit = (event) => {
         event.preventDefault();
 
-        const target = event.target;
-
         this.props.getSearchResult();
     }
 

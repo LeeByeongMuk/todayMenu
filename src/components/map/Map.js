@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { PageColor, FontColor } from '../../styles/variable.js';
+import {FontColor, PageColor} from '../../styles/variable.js';
 
 const MapContainer = styled.article`
     width: 100%;
@@ -12,10 +12,7 @@ class Map extends React.Component {
     map = null;
     ps = null;
     markers = [];
-
-    state = {
-        markerKey: ''
-    }
+    currentMarker = null;
 
     loadCDN = (callback) => {
         let url = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_JS_KEY}&autoload=false&libraries=services`;
@@ -53,6 +50,7 @@ class Map extends React.Component {
                 this.map = new window.kakao.maps.Map(container, options);
                 this.props.changeLatLng(latlng.Ma, latlng.La);
                 this.props.changeCenter(latlng.Ma, latlng.La);
+                this.setCurrentMarker(latlng.Ma, latlng.La);
                 this.getMenu();
 
                 // center event 등록
@@ -68,6 +66,7 @@ class Map extends React.Component {
         let locPosition = new window.kakao.maps.LatLng(lat, lng);
         this.props.changeLatLng(lat, lng);
         this.map.setCenter(locPosition);
+        this.setCurrentMarker(lat, lng);
 
         this.getMenu();
     }
@@ -91,6 +90,31 @@ class Map extends React.Component {
         }
 
         return new window.kakao.maps.LatLng(lat, lng);
+    }
+
+    setCurrentMarker = (lat, lng) => {
+        if (this.currentMarker) {
+            this.currentMarker.marker.setMap(null);
+            this.currentMarker.infowindow.close();
+            this.currentMarker = [];
+        }
+
+        let markerPosition  = new window.kakao.maps.LatLng(lat, lng);
+        let marker = new window.kakao.maps.Marker({
+            map: this.map,
+            position: markerPosition,
+            title: '현재 검색 위치'
+        });
+        let infowindow = new window.kakao.maps.InfoWindow({
+            position: markerPosition,
+            content: '현재 검색 위치'
+        });
+        infowindow.open(this.map, marker);
+
+        this.currentMarker = {
+            marker: marker,
+            infowindow: infowindow
+        }
     }
 
     getCurrentPosition = () => {
