@@ -9,16 +9,15 @@ import SearchResult from "./SearchResult.js";
 import {fetchGeocode} from "../../api/mapApi";
 
 import {ResetBox} from '../../styles/grid.js';
+import {PageColor, White} from '../../styles/variable.js';
 
 // styled components
 const Layout = styled.section`
     display: flex;
     flex-direction: row;
     align-items: center;
-    position: absolute;
-    top: 60px;
-    left: 0;
-    z-index: 1000;
+    position: relative;
+    width: auto;
     height: calc(100vh - 60px);
 `;
 
@@ -27,8 +26,8 @@ const ControllerWrapper = styled.aside`
     width: ${props => props.visibility ? '400px' : '0'};
     height: 100%;
     padding: 25px 15px;
-    border: 1px solid black;
-    background: #fff;
+    border-right: 2px solid ${PageColor};
+    background: ${White};
     box-sizing: border-box;
 `;
 
@@ -38,33 +37,31 @@ const AddressSection = styled.article`
 
 const ButtonWrapper = styled.section`
     ${ResetBox};
-    
+
     margin-top: 12px;
 `;
 
 const ButtonFold = styled.button`
     position: absolute;
-    right: -24px;
-    width: 24px;
-    height: 50px;
-    background: deepskyblue;
+    right: -36px;
+    z-index: 10000;
+    width: 36px;
+    height: 68px;
+    border: 0;
+    background: ${PageColor};
+    font-size: 28px;
+    color: ${White};
+    outline: none;
 `;
 
 class ControllerSection extends React.Component {
     geocoder = null;
 
     state = {
-        showSection: true,
         address: '',
         searchResult: [],
         placeholder: '주소를 입력해 주세요.'
     };
-
-    toggleSection = () => {
-        this.setState((state) => ({
-            showSection: !state.showSection
-        }));
-    }
 
     // 주소 검색창 데이터 수정 이벤트
     changeAddress = (event) => {
@@ -132,7 +129,7 @@ class ControllerSection extends React.Component {
     render() {
         return (
             <Layout>
-                <ControllerWrapper visibility={this.state.showSection ? 1 : 0}>
+                <ControllerWrapper visibility={this.props.showSection ? 1 : 0}>
                     <AddressSection>
                         {/*검색창*/}
                         <SearchInput address={this.state.address}
@@ -147,14 +144,18 @@ class ControllerSection extends React.Component {
 
                     <ButtonWrapper>
                         <button type="button"
-                                onClick={this.props.changeMarker}>다른 식당 검색</button>
+                                onClick={this.props.changeMarker}>
+                            다른 식당 검색
+                        </button>
                         <button type="button"
-                                onClick={this.props.resetLocation}>위치 재설정</button>
+                                onClick={this.props.resetLocation}>
+                            위치 재설정
+                        </button>
                     </ButtonWrapper>
                 </ControllerWrapper>
 
-                <ButtonFold type="button" onClick={this.toggleSection}>
-                    {this.state.showSection ? '<' : '>'}
+                <ButtonFold type="button" onClick={this.props.toggleSection}>
+                    {this.props.showSection ? '<' : '>'}
                 </ButtonFold>
             </Layout>
         );

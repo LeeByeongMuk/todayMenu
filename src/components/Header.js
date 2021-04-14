@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { PageColor, White } from '../styles/variable.js';
+import {PageColor, White} from '../styles/variable.js';
 
 const HeaderWrapper = styled.header`
     display: flex;

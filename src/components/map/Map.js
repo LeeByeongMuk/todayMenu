@@ -2,9 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 
 const MapContainer = styled.article`
-  width: 100%;
-  height: 400px;
-  margin-top: 20px;
+    width: 100%;
+    height: calc(100vh - 60px);
 `;
 
 class Map extends React.Component {
@@ -50,6 +49,7 @@ class Map extends React.Component {
                 };
 
                 this.map = new window.kakao.maps.Map(container, options);
+                this.props.changeLatLng(latlng.Ma, latlng.La);
                 this.getMenu();
 
                 // center event 등록
@@ -78,7 +78,7 @@ class Map extends React.Component {
                 const position = await this.getCurrentPosition();
                 lat = position.coords.latitude;
                 lng = position.coords.longitude;
-            } catch(e) {
+            } catch (e) {
                 lat = this.props.center.lat;
                 lng = this.props.center.lng;
             }
@@ -186,15 +186,27 @@ class Map extends React.Component {
         }
     }
 
+    resizeMap = () => {
+        let mapContainer = document.getElementById('map');
+        mapContainer.style.width = document.body.clientWidth - 400 + 'px';
+        mapContainer.style.width = '100%';
+    }
+
     componentDidMount() {
         this.initMap();
     }
 
     shouldComponentUpdate(nextProps, nextState) {
         // TODO: 추후 개선
-        if (this.props.lat !== nextProps.lat ||
-            this.props.lng !== nextProps.lng) {
+        if (!this.map && (this.props.lat !== nextProps.lat ||
+            this.props.lng !== nextProps.lng)) {
             this.setCenter(nextProps.lat, nextProps.lng);
+
+            return false;
+        }
+
+        if (this.props.showSection !== nextProps.showSection) {
+            this.resizeMap();
         }
 
         return false;
