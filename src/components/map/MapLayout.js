@@ -2,8 +2,8 @@ import React from 'react';
 import styled from 'styled-components';
 import {ResetBox} from '../../styles/grid.js';
 
-import ControllerSection from "./ControllerSection.js";
 import Map from './Map.js';
+import MapPanel from "./MapPanel";
 
 const Container = styled.div`
     ${ResetBox};
@@ -12,24 +12,16 @@ const Container = styled.div`
 `;
 
 class MapSearch extends React.Component {
-    controller = React.createRef();
     map = React.createRef();
 
     state = {
-        showSection: false,
         lat: '33.450701',
         lng: '126.570667',
         center: {
             lat: '33.450701',
             lng: '126.570667'
         },
-        level: 3
-    }
-
-    toggleSection = () => {
-        this.setState((state) => ({
-            showSection: !state.showSection
-        }));
+        level: 4
     }
 
     changeLatLng = (lat, lng) => {
@@ -65,23 +57,16 @@ class MapSearch extends React.Component {
     render() {
         return (
             <Container>
-                <ControllerSection ref={this.controller}
-                                   showSection={this.state.showSection}
-                                   lat={this.state.lat}
-                                   lng={this.state.lng}
-                                   toggleSection={this.toggleSection}
-                                   changeLatLng={this.changeLatLng}
-                                   changeMarker={this.changeMarker}
-                                   resetLocation={this.resetLocation}/>
-
                 <Map ref={this.map}
-                     showSection={this.state.showSection}
                      lat={this.state.lat}
                      lng={this.state.lng}
                      level={this.state.level}
                      center={this.state.center}
                      changeLatLng={this.changeLatLng}
                      changeCenter={this.changeCenter}/>
+
+                <MapPanel changeMarker={this.changeMarker}
+                          resetLocation={this.resetLocation}/>
             </Container>
         )
     }

@@ -143,14 +143,6 @@ class ControllerSection extends React.Component {
                     </AddressSection>
 
                     <ButtonWrapper>
-                        <button type="button"
-                                onClick={this.props.changeMarker}>
-                            다른 식당 검색
-                        </button>
-                        <button type="button"
-                                onClick={this.props.resetLocation}>
-                            위치 재설정
-                        </button>
                     </ButtonWrapper>
                 </ControllerWrapper>
 

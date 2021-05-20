@@ -13,6 +13,7 @@ class Map extends React.Component {
     ps = null;
     markers = [];
     currentMarker = null;
+    circle = null;
 
     loadCDN = (callback) => {
         let url = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_JS_KEY}&autoload=false&libraries=services`;
@@ -52,6 +53,17 @@ class Map extends React.Component {
                 this.props.changeCenter(latlng.Ma, latlng.La);
                 this.setCurrentMarker(latlng.Ma, latlng.La);
                 this.getMenu();
+                this.setCircle({
+                    map: this.map,
+                    center: latlng,
+                    radius: 500,
+                    strokeWeight: 2,
+                    strokeColor: '#FF00FF',
+                    strokeOpacity: 0.8,
+                    strokeStyle: 'dashed',
+                    fillColor: '#00EEEE',
+                    fillOpacity: 0.5
+                });
 
                 // center event 등록
                 window.kakao.maps.event.addListener(this.map, 'dragend', () => {
@@ -67,6 +79,9 @@ class Map extends React.Component {
         this.props.changeLatLng(lat, lng);
         this.map.setCenter(locPosition);
         this.setCurrentMarker(lat, lng);
+        this.setCircle({
+            center: locPosition,
+        });
 
         this.getMenu();
     }
@@ -99,7 +114,7 @@ class Map extends React.Component {
             this.currentMarker = [];
         }
 
-        let markerPosition  = new window.kakao.maps.LatLng(lat, lng);
+        let markerPosition = new window.kakao.maps.LatLng(lat, lng);
         let marker = new window.kakao.maps.Marker({
             map: this.map,
             position: markerPosition,
@@ -114,6 +129,14 @@ class Map extends React.Component {
         this.currentMarker = {
             marker: marker,
             infowindow: infowindow
+        }
+    }
+
+    setCircle(options) {
+        if (this.circle) {
+            this.circle.setOptions(options);
+        } else {
+            this.circle = new window.kakao.maps.Circle(options);
         }
     }
 
@@ -235,7 +258,7 @@ class Map extends React.Component {
         if ((this.props.lat !== nextProps.lat ||
             this.props.lng !== nextProps.lng) &&
             (this.props.lat !== this.props.center.lat ||
-            this.props.lng !== this.props.center.lng)) {
+                this.props.lng !== this.props.center.lng)) {
             this.setCenter(nextProps.lat, nextProps.lng);
         }
 

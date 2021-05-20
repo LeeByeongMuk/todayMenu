@@ -1,3 +1,4 @@
+import React, {memo} from "react";
 import styled from 'styled-components';
 import {PageColor, White} from '../styles/variable.js';
 
@@ -15,12 +16,12 @@ const Title = styled.h1`
     color: ${White}
 `;
 
-function Header() {
+const Header = memo(() => {
     return (
         <HeaderWrapper>
             <Title>Today Menu</Title>
         </HeaderWrapper>
     );
-}
+});
 
 export default Header;
