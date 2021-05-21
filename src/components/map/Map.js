@@ -59,11 +59,14 @@ class Map extends React.Component {
                     radius: 500,
                     strokeWeight: 2,
                     strokeColor: '#FF00FF',
-                    strokeOpacity: 0.8,
+                    strokeOpacity: 0.4,
                     strokeStyle: 'dashed',
                     fillColor: '#00EEEE',
-                    fillOpacity: 0.5
+                    fillOpacity: 0.2
                 });
+
+                let zoomControl = new window.kakao.maps.ZoomControl();
+                this.map.addControl(zoomControl, window.kakao.maps.ControlPosition.LEFT);
 
                 // center event 등록
                 window.kakao.maps.event.addListener(this.map, 'dragend', () => {
