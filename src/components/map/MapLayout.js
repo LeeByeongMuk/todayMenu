@@ -21,7 +21,8 @@ class MapSearch extends React.Component {
             lat: '33.450701',
             lng: '126.570667'
         },
-        level: 4
+        level: 4,
+        radius: 500
     }
 
     changeLatLng = (lat, lng) => {
@@ -54,6 +55,34 @@ class MapSearch extends React.Component {
         })
     }
 
+    increaseCircleRadius = () => {
+        if (this.state.radius >= 500) {
+            alert('최대 범위 설정');
+            return false;
+        }
+
+        this.setState((state) => {
+            return {
+                radius: state.radius + 50
+            }
+        });
+    }
+
+    decreaseCircleRadius = () => {
+        console.log('decre');
+        console.log(this.state.radius);
+        if (this.state.radius <= 50) {
+            alert('최소 범위 설정');
+            return false;
+        }
+
+        this.setState((state) => {
+            return {
+                radius: state.radius - 50
+            }
+        });
+    }
+
     render() {
         return (
             <Container>
@@ -62,11 +91,14 @@ class MapSearch extends React.Component {
                      lng={this.state.lng}
                      level={this.state.level}
                      center={this.state.center}
+                     radius={this.state.radius}
                      changeLatLng={this.changeLatLng}
                      changeCenter={this.changeCenter}/>
 
                 <MapPanel changeMarker={this.changeMarker}
-                          resetLocation={this.resetLocation}/>
+                          resetLocation={this.resetLocation}
+                          increaseCircleRadius={this.increaseCircleRadius}
+                          decreaseCircleRadius={this.decreaseCircleRadius}/>
             </Container>
         )
     }

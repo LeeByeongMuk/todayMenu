@@ -4,6 +4,7 @@ import {ButtonDefault} from "../../styles/Button";
 
 import ResetLocationBtn from "../button/ResetLocationBtn";
 import ChangeInfoBtn from "../button/ChangeInfoBtn";
+import SetCircleRadius from "../button/SetCircleRadius";
 
 const RightPanelWrapper = styled.article`
     display: flex;
@@ -45,11 +46,18 @@ const BottomPanelWrapper = styled.article`
     }
 `;
 
-const MapPanel = memo(({changeMarker, resetLocation}) => {
+const MapPanel = memo(({
+        changeMarker,
+        resetLocation,
+        decreaseCircleRadius,
+        increaseCircleRadius
+    }) => {
     return (
         <>
             <RightPanelWrapper>
                 <ResetLocationBtn resetLocation={resetLocation}/>
+                <SetCircleRadius increaseCircleRadius={increaseCircleRadius}
+                                 decreaseCircleRadius={decreaseCircleRadius} />
             </RightPanelWrapper>
 
             <BottomPanelWrapper>

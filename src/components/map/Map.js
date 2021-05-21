@@ -53,10 +53,11 @@ class Map extends React.Component {
                 this.props.changeCenter(latlng.Ma, latlng.La);
                 this.setCurrentMarker(latlng.Ma, latlng.La);
                 this.getMenu();
+
                 this.setCircle({
                     map: this.map,
                     center: latlng,
-                    radius: 500,
+                    radius: this.props.radius,
                     strokeWeight: 2,
                     strokeColor: '#FF00FF',
                     strokeOpacity: 0.4,
@@ -84,6 +85,7 @@ class Map extends React.Component {
         this.setCurrentMarker(lat, lng);
         this.setCircle({
             center: locPosition,
+            radius: this.props.radius
         });
 
         this.getMenu();
@@ -159,7 +161,7 @@ class Map extends React.Component {
     getMenu = () => {
         // TODO: 개선 필요
         let option = {
-            radius: 500,
+            radius: this.props.radius,
             useMapCenter: true,
             useMapBounds: true
         }
@@ -261,7 +263,8 @@ class Map extends React.Component {
         if ((this.props.lat !== nextProps.lat ||
             this.props.lng !== nextProps.lng) &&
             (this.props.lat !== this.props.center.lat ||
-                this.props.lng !== this.props.center.lng)) {
+                this.props.lng !== this.props.center.lng) ||
+            this.props.radius !== nextProps.radius ) {
             this.setCenter(nextProps.lat, nextProps.lng);
         }
 
