@@ -1,5 +1,5 @@
-import {BorderColor, FontColor} from './variable.js';
 import styled from 'styled-components';
+import {BorderColor, FontColor} from './variable.js';
 
 export const Input = styled.input`
     width: 100%;

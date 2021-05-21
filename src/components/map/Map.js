@@ -5,7 +5,7 @@ import {FontColor, PageColor} from '../../styles/variable.js';
 
 const MapContainer = styled.article`
     width: 100%;
-    height: calc(100vh - 60px);
+    height: 100vh;
 `;
 
 class Map extends React.Component {

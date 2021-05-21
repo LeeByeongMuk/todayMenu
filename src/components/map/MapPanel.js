@@ -1,29 +1,23 @@
 import React, {memo} from "react";
 import styled from 'styled-components';
-import {BorderColor, White, Black} from "../../styles/variable";
+import {ButtonDefault} from "../../styles/Button";
 
 import ResetLocationBtn from "../button/ResetLocationBtn";
 import ChangeInfoBtn from "../button/ChangeInfoBtn";
 
-const PanelWrapper = styled.article`
+const RightPanelWrapper = styled.article`
     display: flex;
     flex-direction: column;
     position: fixed;
-    top: 15px;
+    top: 20px;
     right: 15px;
     z-index: 10000;
     width: 70px;
     background: transparent;
 
     button {
+        ${ButtonDefault};
         margin-top: 20px;
-        padding: 5px;
-        border: 1px solid ${BorderColor};
-        border-radius: 8px;
-        background: ${White};
-        color: ${Black};
-        word-break: keep-all;
-        cursor: pointer;
 
         &:first-child {
             margin-top: 0;
@@ -31,13 +25,37 @@ const PanelWrapper = styled.article`
     }
 `;
 
+const BottomPanelWrapper = styled.article`
+    display: flex;
+    justify-content: center;
+    position: fixed;
+    left: 0;
+    bottom: 20px;
+    z-index: 10000;
+    width: 100%;
+    background: transparent;
+    
+    button {
+        ${ButtonDefault};
+        width: 200px;
+        height: 80px;
+        margin-bottom: 35px;
+        font-weight: bold;
+        font-size: 20px;
+    }
+`;
 
 const MapPanel = memo(({changeMarker, resetLocation}) => {
     return (
-        <PanelWrapper>
-            <ResetLocationBtn resetLocation={resetLocation}/>
-            <ChangeInfoBtn changeMarker={changeMarker}/>
-        </PanelWrapper>
+        <>
+            <RightPanelWrapper>
+                <ResetLocationBtn resetLocation={resetLocation}/>
+            </RightPanelWrapper>
+
+            <BottomPanelWrapper>
+                <ChangeInfoBtn changeMarker={changeMarker}/>
+            </BottomPanelWrapper>
+        </>
     );
 });
 
