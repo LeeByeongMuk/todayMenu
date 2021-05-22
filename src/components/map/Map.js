@@ -78,14 +78,14 @@ class Map extends React.Component {
         });
     }
 
-    setCenter = (lat, lng) => {
+    setCenter = ({lat, lng, radius}) => {
         let locPosition = new window.kakao.maps.LatLng(lat, lng);
         this.props.changeLatLng(lat, lng);
         this.map.setCenter(locPosition);
         this.setCurrentMarker(lat, lng);
         this.setCircle({
             center: locPosition,
-            radius: this.props.radius
+            radius: radius || this.props.radius
         });
 
         this.getMenu();
@@ -122,12 +122,11 @@ class Map extends React.Component {
         let markerPosition = new window.kakao.maps.LatLng(lat, lng);
         let marker = new window.kakao.maps.Marker({
             map: this.map,
-            position: markerPosition,
-            title: '현재 검색 위치'
+            position: markerPosition
         });
         let infowindow = new window.kakao.maps.InfoWindow({
             position: markerPosition,
-            content: '현재 검색 위치'
+            content: '현재 위치'
         });
         infowindow.open(this.map, marker);
 
@@ -263,9 +262,13 @@ class Map extends React.Component {
         if ((this.props.lat !== nextProps.lat ||
             this.props.lng !== nextProps.lng) &&
             (this.props.lat !== this.props.center.lat ||
-                this.props.lng !== this.props.center.lng) ||
-            this.props.radius !== nextProps.radius ) {
-            this.setCenter(nextProps.lat, nextProps.lng);
+            this.props.lng !== this.props.center.lng) ||
+            this.props.radius !== nextProps.radius) {
+            this.setCenter({
+                lat: nextProps.lat,
+                lng: nextProps.lng,
+                radius: nextProps.radius
+            });
         }
 
         if (this.props.showSection !== nextProps.showSection) {
