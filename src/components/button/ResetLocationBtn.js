@@ -1,11 +1,13 @@
-import React, {memo, useState} from "react";
+import React, {memo} from "react";
+import {PanelButton} from "../../styles/Button";
+import {MyLocation} from '@styled-icons/material';
 
 const ResetLocationBtn = memo(({resetLocation}) => {
     return (
-        <button type="button"
+        <PanelButton type="button"
                 onClick={resetLocation}>
-            위치 재설정
-        </button>
+            <MyLocation title="위치 재설정" size="32px" />
+        </PanelButton>
     );
 });
 

@@ -52,7 +52,9 @@ class Map extends React.Component {
                 this.props.changeLatLng(latlng.Ma, latlng.La);
                 this.props.changeCenter(latlng.Ma, latlng.La);
                 this.setCurrentMarker(latlng.Ma, latlng.La);
-                this.getMenu();
+                this.getMenu({
+                    radius: this.props.radius
+                });
 
                 this.setCircle({
                     map: this.map,
@@ -88,7 +90,9 @@ class Map extends React.Component {
             radius: radius || this.props.radius
         });
 
-        this.getMenu();
+        this.getMenu({
+            radius: radius || this.props.radius
+        });
     }
 
     // geolocation 작업
@@ -157,10 +161,10 @@ class Map extends React.Component {
     }
 
     // 카테고리 검색 기능
-    getMenu = () => {
+    getMenu = ({radius}) => {
         // TODO: 개선 필요
         let option = {
-            radius: this.props.radius,
+            radius: radius || this.props.radius,
             useMapCenter: true,
             useMapBounds: true
         }

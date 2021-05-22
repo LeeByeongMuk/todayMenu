@@ -56,14 +56,14 @@ class MapSearch extends React.Component {
     }
 
     increaseCircleRadius = () => {
-        if (this.state.radius >= 500) {
+        if (this.state.radius >= 800) {
             alert('최대 범위 설정');
             return false;
         }
 
         this.setState((state) => {
             return {
-                radius: state.radius + 50
+                radius: state.radius * 2
             }
         });
     }
@@ -76,7 +76,7 @@ class MapSearch extends React.Component {
 
         this.setState((state) => {
             return {
-                radius: state.radius - 50
+                radius: state.radius / 2
             }
         });
     }

@@ -1,6 +1,5 @@
 import React, {memo} from "react";
 import styled from 'styled-components';
-import {ButtonDefault} from "../../styles/Button";
 
 import ResetLocationBtn from "../button/ResetLocationBtn";
 import ChangeInfoBtn from "../button/ChangeInfoBtn";
@@ -13,51 +12,31 @@ const RightPanelWrapper = styled.article`
     top: 20px;
     right: 15px;
     z-index: 10000;
-    width: 70px;
+    width: 48px;
     background: transparent;
-
-    button {
-        ${ButtonDefault};
-        margin-top: 20px;
-
-        &:first-child {
-            margin-top: 0;
-        }
-    }
 `;
 
 const BottomPanelWrapper = styled.article`
-    display: flex;
-    justify-content: center;
     position: fixed;
-    left: 0;
-    bottom: 20px;
+    left: 50%;
+    bottom: 50px;
     z-index: 10000;
-    width: 100%;
+    margin-left: -100px;
     background: transparent;
-    
-    button {
-        ${ButtonDefault};
-        width: 200px;
-        height: 80px;
-        margin-bottom: 35px;
-        font-weight: bold;
-        font-size: 20px;
-    }
 `;
 
 const MapPanel = memo(({
-        changeMarker,
-        resetLocation,
-        decreaseCircleRadius,
-        increaseCircleRadius
-    }) => {
+       changeMarker,
+       resetLocation,
+       decreaseCircleRadius,
+       increaseCircleRadius
+   }) => {
     return (
         <>
             <RightPanelWrapper>
                 <ResetLocationBtn resetLocation={resetLocation}/>
                 <SetCircleRadius increaseCircleRadius={increaseCircleRadius}
-                                 decreaseCircleRadius={decreaseCircleRadius} />
+                                 decreaseCircleRadius={decreaseCircleRadius}/>
             </RightPanelWrapper>
 
             <BottomPanelWrapper>
