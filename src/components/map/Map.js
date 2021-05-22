@@ -119,7 +119,6 @@ class Map extends React.Component {
     setCurrentMarker = (lat, lng) => {
         if (this.currentMarker) {
             this.currentMarker.marker.setMap(null);
-            this.currentMarker.infowindow.close();
             this.currentMarker = [];
         }
 
@@ -128,15 +127,8 @@ class Map extends React.Component {
             map: this.map,
             position: markerPosition
         });
-        let infowindow = new window.kakao.maps.InfoWindow({
-            position: markerPosition,
-            content: '현재 위치'
-        });
-        infowindow.open(this.map, marker);
-
         this.currentMarker = {
-            marker: marker,
-            infowindow: infowindow
+            marker: marker
         }
     }
 
@@ -209,12 +201,10 @@ class Map extends React.Component {
 
         marker.setVisible(visible);
 
-        const content = `<div style="max-width: 280px;padding: 5px 10px;font-size14px; line-height: 24px; ${FontColor};text-align: center;word-break: keep-all">
+        const content = `<div style="max-width: 280px;padding: 5px 10px; font-size: 14px; line-height: 24px; color: ${FontColor}; text-align: center">
             <a href="${place.place_url}" style="font-weight: bold; font-size: 16px; color: ${PageColor}" target="_blank">
                 ${place.place_name}
-            </a><br>
-            
-            <p>주소: ${place.address_name}</p>
+            </a>
         </div>`;
 
         let infowindow = new window.kakao.maps.InfoWindow({
@@ -266,7 +256,7 @@ class Map extends React.Component {
         if ((this.props.lat !== nextProps.lat ||
             this.props.lng !== nextProps.lng) &&
             (this.props.lat !== this.props.center.lat ||
-            this.props.lng !== this.props.center.lng) ||
+                this.props.lng !== this.props.center.lng) ||
             this.props.radius !== nextProps.radius) {
             this.setCenter({
                 lat: nextProps.lat,
