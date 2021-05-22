@@ -22,7 +22,7 @@ class MapSearch extends React.Component {
             lng: '126.570667'
         },
         level: 4,
-        radius: 500
+        radius: 200
     }
 
     changeLatLng = (lat, lng) => {
@@ -69,8 +69,6 @@ class MapSearch extends React.Component {
     }
 
     decreaseCircleRadius = () => {
-        console.log('decre');
-        console.log(this.state.radius);
         if (this.state.radius <= 50) {
             alert('최소 범위 설정');
             return false;
