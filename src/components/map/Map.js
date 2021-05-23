@@ -68,9 +68,6 @@ class Map extends React.Component {
                     fillOpacity: 0.2
                 });
 
-                let zoomControl = new window.kakao.maps.ZoomControl();
-                this.map.addControl(zoomControl, window.kakao.maps.ControlPosition.LEFT);
-
                 // center event 등록
                 window.kakao.maps.event.addListener(this.map, 'dragend', () => {
                     const latlng = this.map.getCenter();
