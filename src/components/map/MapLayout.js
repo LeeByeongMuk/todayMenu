@@ -1,8 +1,8 @@
-import React from 'react';
-import styled from 'styled-components';
-import {ResetBox} from '../../styles/grid.js';
+import React, {Component} from "react";
+import styled from "styled-components";
+import {ResetBox} from "../../styles/grid";
 
-import Map from './Map.js';
+import Map from './Map';
 import MapPanel from "./MapPanel";
 
 const Container = styled.div`
@@ -11,15 +11,15 @@ const Container = styled.div`
     flex-direction: row;
 `;
 
-class MapSearch extends React.Component {
+class MapLayout extends Component {
     map = React.createRef();
 
     state = {
-        lat: '33.450701',
-        lng: '126.570667',
+        lat: 33.450701,
+        lng: 126.570667,
         center: {
-            lat: '33.450701',
-            lng: '126.570667'
+            lat: 33.450701,
+            lng: 126.570667
         },
         level: 4,
         radius: 200
@@ -46,12 +46,15 @@ class MapSearch extends React.Component {
     }
 
     resetLocation = () => {
-        const lat = this.state.center.lat;
-        const lng = this.state.center.lng;
+        const {Ma: lat, La: lng} = this.map.current.map.getCenter();
 
         this.setState({
             lat: lat,
-            lng: lng
+            lng: lng,
+            center: {
+                lat: lat,
+                lng: lng
+            }
         })
     }
 
@@ -81,6 +84,15 @@ class MapSearch extends React.Component {
         });
     }
 
+    shouldComponentUpdate(nextProps, nextState, nextContext) {
+        if (nextState.lat === nextState.center.lat &&
+            nextState.lng === nextState.center.lng) {
+            return true;
+        }
+
+        return false;
+    }
+
     render() {
         return (
             <Container>
@@ -102,4 +114,4 @@ class MapSearch extends React.Component {
     }
 }
 
-export default MapSearch;
+export default MapLayout;

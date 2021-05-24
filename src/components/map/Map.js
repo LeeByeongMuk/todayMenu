@@ -1,12 +1,64 @@
 import React from 'react';
 import styled from 'styled-components';
-
-import {FontColor, PageColor} from '../../styles/variable.js';
+import {FontColor, PageColor} from "../../styles/variable";
 
 const MapContainer = styled.article`
     width: 100%;
     height: 100vh;
 `;
+
+const kakaoMapUrl = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_JS_KEY}&autoload=false&libraries=services`;
+const circleOptions = {
+    strokeWeight: 2,
+    strokeColor: '#FF00FF',
+    strokeOpacity: 0.4,
+    strokeStyle: 'dashed',
+    fillColor: '#00EEEE',
+    fillOpacity: 0.2
+};
+const categoryCode = 'FD6';
+
+const removeCDN = () => {
+    const element = document.getElementById('map-cdn');
+
+    if (element) {
+        element.remove();
+    }
+}
+
+// geolocation 작업
+const getCurrentLocation = async () => {
+    let lat, lng;
+
+    if (navigator.geolocation) {
+        try {
+            const position = await getCurrentPosition();
+            lat = position.coords.latitude;
+            lng = position.coords.longitude;
+        } catch (e) {
+            lat = this.props.center.lat;
+            lng = this.props.center.lng;
+        }
+    } else {
+        lat = this.props.center.lat;
+        lng = this.props.center.lng;
+    }
+
+    return new window.kakao.maps.LatLng(lat, lng);
+}
+
+// get geolocation position
+const getCurrentPosition = () => {
+    const options = {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
+    }
+
+    return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(resolve, reject, options);
+    });
+}
 
 class Map extends React.Component {
     map = null;
@@ -16,12 +68,10 @@ class Map extends React.Component {
     circle = null;
 
     loadCDN = (callback) => {
-        let url = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.REACT_APP_KAKAO_JS_KEY}&autoload=false&libraries=services`;
-
         let element = document.createElement('script');
         element.async = true;
-        element.id = 'map-cdn'
-        element.src = url;
+        element.id = 'map-cdn';
+        element.src = kakaoMapUrl;
 
         element.onload = () => {
             callback();
@@ -30,162 +80,93 @@ class Map extends React.Component {
         document.head.appendChild(element);
     }
 
-    removeCDN = () => {
-        let element = document.getElementById('map-cdn');
-
-        if (element) {
-            element.remove();
-        }
-    }
-
+    // map 초기 load 설정
     initMap = () => {
         this.loadCDN(() => {
             window.kakao.maps.load(async () => {
-                let container = document.getElementById('map');
-                const latlng = await this.getCurrentLocation();
-                let options = {
-                    center: latlng,
+                const locPosition = await getCurrentLocation();
+                const container = document.getElementById('map');
+                const options = {
+                    center: locPosition,
                     level: this.props.level
                 };
 
-                this.map = new window.kakao.maps.Map(container, options);
-                this.props.changeLatLng(latlng.Ma, latlng.La);
-                this.props.changeCenter(latlng.Ma, latlng.La);
-                this.setCurrentMarker(latlng.Ma, latlng.La);
-                this.getMenu({
+                this.map = new window.kakao.maps.Map(container, options); // map 초기화
+                this.setCenter({
+                    lat: locPosition.Ma,
+                    lng: locPosition.La,
                     radius: this.props.radius
-                });
-
-                this.setCircle({
-                    map: this.map,
-                    center: latlng,
-                    radius: this.props.radius,
-                    strokeWeight: 2,
-                    strokeColor: '#FF00FF',
-                    strokeOpacity: 0.4,
-                    strokeStyle: 'dashed',
-                    fillColor: '#00EEEE',
-                    fillOpacity: 0.2
-                });
-
-                // center event 등록
-                window.kakao.maps.event.addListener(this.map, 'dragend', () => {
-                    const latlng = this.map.getCenter();
-                    this.props.changeCenter(latlng.Ma, latlng.La);
                 });
             });
         });
     }
 
+    // center 위치 설정
     setCenter = ({lat, lng, radius}) => {
-        let locPosition = new window.kakao.maps.LatLng(lat, lng);
-        this.props.changeLatLng(lat, lng);
+        const locPosition = new window.kakao.maps.LatLng(lat, lng);
         this.map.setCenter(locPosition);
-        this.setCurrentMarker(lat, lng);
+        this.setCurrentMarker(locPosition);
         this.setCircle({
             center: locPosition,
             radius: radius || this.props.radius
         });
-
         this.getMenu({
             radius: radius || this.props.radius
         });
     }
 
-    // geolocation 작업
-    getCurrentLocation = async () => {
-        let lat, lng;
-
-        if (navigator.geolocation) {
-            try {
-                const position = await this.getCurrentPosition();
-                lat = position.coords.latitude;
-                lng = position.coords.longitude;
-            } catch (e) {
-                lat = this.props.center.lat;
-                lng = this.props.center.lng;
-            }
-        } else {
-            lat = this.props.center.lat;
-            lng = this.props.center.lng;
-        }
-
-        return new window.kakao.maps.LatLng(lat, lng);
-    }
-
-    setCurrentMarker = (lat, lng) => {
+    // 현재 위치 마커 설정
+    setCurrentMarker = (locPosition) => {
         if (this.currentMarker) {
-            this.currentMarker.marker.setMap(null);
-            this.currentMarker = [];
+            this.currentMarker.setMap(null);
+            this.currentMarker = null;
         }
 
-        let markerPosition = new window.kakao.maps.LatLng(lat, lng);
-        let marker = new window.kakao.maps.Marker({
+        this.currentMarker = new window.kakao.maps.Marker({
             map: this.map,
-            position: markerPosition
+            position: locPosition
         });
-        this.currentMarker = {
-            marker: marker
-        }
     }
 
-    setCircle(options) {
+    // 검색 범위 설정
+    setCircle = (options) => {
         if (this.circle) {
             this.circle.setOptions(options);
         } else {
-            this.circle = new window.kakao.maps.Circle(options);
+            this.circle = new window.kakao.maps.Circle({
+                ...circleOptions,
+                ...options,
+                map: this.map
+            });
         }
-    }
-
-    getCurrentPosition = () => {
-        const options = {
-            enableHighAccuracy: true,
-            timeout: 5000,
-            maximumAge: 0
-        }
-
-        return new Promise((resolve, reject) => {
-            navigator.geolocation.getCurrentPosition(resolve, reject, options);
-        })
     }
 
     // 카테고리 검색 기능
     getMenu = ({radius}) => {
-        // TODO: 개선 필요
-        let option = {
+        const options = {
             radius: radius || this.props.radius,
             useMapCenter: true,
             useMapBounds: true
         }
 
         this.ps = new window.kakao.maps.services.Places(this.map);
-        this.ps.categorySearch('FD6', this.placesSearchCB, option);
+        this.ps.categorySearch(categoryCode, this.placesSearchCB, options);
     }
 
     // 카테고리 검색 callback
     placesSearchCB = (data, status) => {
         if (status === window.kakao.maps.services.Status.OK) {
-            this.clearMarkers(); // 기존 마커 제거
+            this.clearMarkers();
             const randomKey = Math.floor(Math.random() * data.length);
 
             for (let i = 0; i < data.length; i++) {
                 const place = data[i];
-                let locPosition = new window.kakao.maps.LatLng(place.y, place.x);
+                const locPosition = new window.kakao.maps.LatLng(place.y, place.x);
                 const visible = (randomKey === i);
 
                 this.displayMarker(locPosition, place, visible);
             }
         }
-    }
-
-    // 마커 초기화
-    clearMarkers() {
-        for (let i = 0; i < this.markers.length; i++) {
-            this.markers[i].marker.setMap(null);
-            this.markers[i].infowindow.close();
-        }
-
-        this.markers = [];
     }
 
     // 마커 등록
@@ -195,7 +176,6 @@ class Map extends React.Component {
             position: locPosition,
             clickable: true
         });
-
         marker.setVisible(visible);
 
         const content = `<div style="max-width: 280px;padding: 5px 10px; font-size: 14px; line-height: 24px; color: ${FontColor}; text-align: center">
@@ -203,7 +183,6 @@ class Map extends React.Component {
                 ${place.place_name}
             </a>
         </div>`;
-
         let infowindow = new window.kakao.maps.InfoWindow({
             content: content
         });
@@ -219,12 +198,12 @@ class Map extends React.Component {
         });
     }
 
-    randomMarker() {
+    // 마커 램덤 변경
+    randomMarker = () => {
         const visibleMarker = this.markers.filter(marker => marker.visible)[0];
 
         if (visibleMarker) {
             const markerIndex = this.markers.indexOf(visibleMarker);
-
             visibleMarker.marker.setMap(null);
             visibleMarker.infowindow.close();
             this.markers.splice(markerIndex, 1);
@@ -232,45 +211,47 @@ class Map extends React.Component {
 
         if (this.markers.length > 0) {
             const randomKey = Math.floor(Math.random() * this.markers.length);
-
             this.markers[randomKey].visible = true;
             this.markers[randomKey].marker.setVisible(true);
             this.markers[randomKey].infowindow.open(this.map, this.markers[randomKey].marker);
         }
     }
 
-    resizeMap = () => {
-        let mapContainer = document.getElementById('map');
-        mapContainer.style.width = document.body.clientWidth - 400 + 'px';
-        mapContainer.style.width = '100%';
+    // 마커 삭제
+    clearMarkers = () => {
+        for (let i = 0; i < this.markers.length; i++) {
+            this.markers[i].marker.setMap(null);
+            this.markers[i].infowindow.close();
+        }
+
+        this.markers = [];
     }
 
     componentDidMount() {
         this.initMap();
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        if ((this.props.lat !== nextProps.lat ||
-            this.props.lng !== nextProps.lng) &&
-            (this.props.lat !== this.props.center.lat ||
-                this.props.lng !== this.props.center.lng) ||
-            this.props.radius !== nextProps.radius) {
-            this.setCenter({
-                lat: nextProps.lat,
-                lng: nextProps.lng,
-                radius: nextProps.radius
-            });
-        }
+    shouldComponentUpdate(nextProps) {
+        const {lat, lng} = nextProps;
+        const {lat: centerLat, lng: centerLng} = nextProps.center;
 
-        if (this.props.showSection !== nextProps.showSection) {
-            this.resizeMap();
+        if (lat === centerLat && lng === centerLng) {
+            return true;
         }
 
         return false;
     }
 
+    componentDidUpdate() {
+        this.setCenter({
+            lat: this.props.lat,
+            lng: this.props.lng,
+            radius: this.props.radius
+        });
+    }
+
     componentWillMount() {
-        this.removeCDN();
+        removeCDN();
     }
 
     render() {
