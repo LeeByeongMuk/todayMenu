@@ -178,23 +178,25 @@ class Map extends React.Component {
         });
         marker.setVisible(visible);
 
-        const content = `<div style="max-width: 280px;padding: 5px 10px; font-size: 14px; line-height: 24px; color: ${FontColor}; text-align: center">
+        // TODO:
+        const content = `<div style="max-width: 280px; padding: 5px 10px; border: 1px solid rgb(118, 129, 168); background: #fff; font-size: 14px; line-height: 24px; color: ${FontColor}; text-align: center; word-break: keep-all">
             <a href="${place.place_url}" style="font-weight: bold; font-size: 16px; color: ${PageColor}" target="_blank">
                 ${place.place_name}
             </a>
         </div>`;
-        let infowindow = new window.kakao.maps.InfoWindow({
-            content: content
-        });
 
-        if (visible) {
-            infowindow.open(this.map, marker);
-        }
+        const customOverlay = new window.kakao.maps.CustomOverlay({
+            content: content,
+            map: this.map,
+            position: locPosition,
+            yAnchor: 2.5
+        });
+        customOverlay.setVisible(visible);
 
         this.markers.push({
             visible: visible,
             marker: marker,
-            infowindow: infowindow
+            overlay: customOverlay
         });
     }
 
@@ -205,7 +207,7 @@ class Map extends React.Component {
         if (visibleMarker) {
             const markerIndex = this.markers.indexOf(visibleMarker);
             visibleMarker.marker.setMap(null);
-            visibleMarker.infowindow.close();
+            visibleMarker.overlay.setMap(null);
             this.markers.splice(markerIndex, 1);
         }
 
@@ -213,7 +215,7 @@ class Map extends React.Component {
             const randomKey = Math.floor(Math.random() * this.markers.length);
             this.markers[randomKey].visible = true;
             this.markers[randomKey].marker.setVisible(true);
-            this.markers[randomKey].infowindow.open(this.map, this.markers[randomKey].marker);
+            this.markers[randomKey].overlay.setVisible(true);
         }
     }
 
@@ -221,7 +223,7 @@ class Map extends React.Component {
     clearMarkers = () => {
         for (let i = 0; i < this.markers.length; i++) {
             this.markers[i].marker.setMap(null);
-            this.markers[i].infowindow.close();
+            this.markers[i].overlay.setMap(null);
         }
 
         this.markers = [];
