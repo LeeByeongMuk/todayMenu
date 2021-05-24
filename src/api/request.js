@@ -8,7 +8,7 @@ const request = async (url, options) => {
         } else {
             throw data;
         }
-    } catch(e) {
+    } catch (e) {
         return {
             message: e.message,
             status: e.status

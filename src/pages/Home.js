@@ -1,8 +1,7 @@
-import React from 'react';
+import React, {PureComponent} from "react";
+import MapLayout from "../components/map/MapLayout";
 
-import MapLayout from '../components/map/MapLayout.js';
-
-class Home extends React.Component {
+class Home extends PureComponent {
     render() {
         return (
             <MapLayout/>

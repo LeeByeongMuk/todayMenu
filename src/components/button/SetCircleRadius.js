@@ -1,9 +1,9 @@
 import React, {memo} from "react";
+import {Add, Remove} from '@styled-icons/material';
 import styled from "styled-components";
+
 import {BorderColor} from "../../styles/variable";
 import {PanelButton} from "../../styles/Button";
-
-import {Add, Remove} from '@styled-icons/material';
 
 const SetCircleController = styled.article`
     overflow: hidden;

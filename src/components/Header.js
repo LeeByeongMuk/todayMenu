@@ -1,6 +1,6 @@
 import React, {memo} from "react";
-import styled from 'styled-components';
-import {PageColor, White} from '../styles/variable.js';
+import styled from "styled-components";
+import {PageColor, White} from "../styles/variable";
 
 const HeaderWrapper = styled.header`
     display: flex;

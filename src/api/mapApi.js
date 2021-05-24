@@ -19,7 +19,7 @@ const fetchGeocode = async (params) => {
             success: true,
             data: result
         }
-    } catch(e) {
+    } catch (e) {
         return {
             success: false,
             data: e
