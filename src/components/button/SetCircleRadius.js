@@ -1,9 +1,9 @@
 import React, {memo} from "react";
-import {Add, Remove} from '@styled-icons/material';
 import styled from "styled-components";
-
 import {BorderColor} from "../../styles/variable";
-import {PanelButton} from "../../styles/Button";
+
+import IncreaseCircleRadius from "./IncreaseCircleRadius";
+import DecreaseCircleRadius from "./DecreaseCircleRadius";
 
 const SetCircleController = styled.article`
     overflow: hidden;
@@ -20,14 +20,8 @@ const SetCircleController = styled.article`
 const SetCircleRadius = memo(({increaseCircleRadius, decreaseCircleRadius}) => {
     return (
         <SetCircleController>
-            <PanelButton className="increase-btn"
-                    onClick={increaseCircleRadius}>
-                <Add title="범위 증가" size="36px" />
-            </PanelButton>
-            <PanelButton className="decrease-btn"
-                    onClick={decreaseCircleRadius}>
-                <Remove title="범위 감소" size="36px" />
-            </PanelButton>
+            <IncreaseCircleRadius clickEvent={increaseCircleRadius} />
+            <DecreaseCircleRadius clickEvent={decreaseCircleRadius} />
         </SetCircleController>
     );
 });
