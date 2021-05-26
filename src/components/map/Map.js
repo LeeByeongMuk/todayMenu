@@ -92,10 +92,9 @@ class Map extends React.Component {
                 };
 
                 this.map = new window.kakao.maps.Map(container, options); // map 초기화
-                this.setCenter({
+                this.props.changeLocation({
                     lat: locPosition.Ma,
-                    lng: locPosition.La,
-                    radius: this.props.radius
+                    lng: locPosition.La
                 });
             });
         });

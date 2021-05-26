@@ -25,20 +25,15 @@ class MapLayout extends Component {
         radius: 200
     }
 
-    changeLatLng = (lat, lng) => {
+    changeLocation = ({lat, lng}) => {
         this.setState({
             lat: lat,
-            lng: lng
-        });
-    }
-
-    changeCenter = (lat, lng) => {
-        this.setState({
+            lng: lng,
             center: {
                 lat: lat,
                 lng: lng
             }
-        });
+        })
     }
 
     changeMarker = () => {
@@ -102,8 +97,7 @@ class MapLayout extends Component {
                      level={this.state.level}
                      center={this.state.center}
                      radius={this.state.radius}
-                     changeLatLng={this.changeLatLng}
-                     changeCenter={this.changeCenter}/>
+                     changeLocation={this.changeLocation}/>
 
                 <MapPanel changeMarker={this.changeMarker}
                           resetLocation={this.resetLocation}
