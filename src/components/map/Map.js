@@ -203,11 +203,12 @@ class Map extends React.Component {
     randomMarker = () => {
         const visibleMarker = this.markers.filter(marker => marker.visible)[0];
 
-        if (visibleMarker) {
+        if (visibleMarker) { // TODO: 기능 개선 필요
             const markerIndex = this.markers.indexOf(visibleMarker);
-            visibleMarker.marker.setMap(null);
-            visibleMarker.overlay.setMap(null);
-            this.markers.splice(markerIndex, 1);
+            visibleMarker.marker.setVisible(false);
+            visibleMarker.overlay.setVisible(false);
+            this.markers[markerIndex].visible = false;
+            // this.markers.splice(markerIndex, 1);
         }
 
         if (this.markers.length > 0) {
