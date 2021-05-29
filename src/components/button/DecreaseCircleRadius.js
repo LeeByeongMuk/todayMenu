@@ -1,6 +1,6 @@
 import React, {memo} from "react";
 import {Remove} from '@styled-icons/material';
-import {PanelButton} from "../../styles/Button";
+import {PanelButton} from "../../styles/button";
 
 const DecreaseCircleRadius = memo(({clickEvent}) => {
     return (
