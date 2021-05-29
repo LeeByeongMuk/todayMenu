@@ -1,5 +1,5 @@
 import React, {memo} from "react";
-import {PanelButton} from "../../styles/Button";
+import {PanelButton} from "../../styles/button";
 import {MyLocation} from '@styled-icons/material';
 
 const ResetLocationBtn = memo(({resetLocation}) => {

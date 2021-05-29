@@ -1,5 +1,5 @@
 import React, {memo} from "react";
-import {LargeButton} from "../../styles/Button";
+import {LargeButton} from "../../styles/button";
 
 const ChangeInfoBtn = memo(({changeMarker}) => {
     return (
