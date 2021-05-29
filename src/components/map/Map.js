@@ -27,7 +27,7 @@ const removeCDN = () => {
 }
 
 // geolocation 작업
-const getCurrentLocation = async () => {
+const getCurrentLocation = async ({lat: centerLat, lng: centerLng}) => {
     let lat, lng;
 
     if (navigator.geolocation) {
@@ -36,12 +36,12 @@ const getCurrentLocation = async () => {
             lat = position.coords.latitude;
             lng = position.coords.longitude;
         } catch (e) {
-            lat = this.props.center.lat;
-            lng = this.props.center.lng;
+            lat = centerLat;
+            lng = centerLng;
         }
     } else {
-        lat = this.props.center.lat;
-        lng = this.props.center.lng;
+        lat = centerLat;
+        lng = centerLng;
     }
 
     return new window.kakao.maps.LatLng(lat, lng);
@@ -84,7 +84,7 @@ class Map extends React.Component {
     initMap = () => {
         this.loadCDN(() => {
             window.kakao.maps.load(async () => {
-                const locPosition = await getCurrentLocation();
+                const locPosition = await getCurrentLocation(this.props.center);
                 const container = document.getElementById('map');
                 const options = {
                     center: locPosition,
