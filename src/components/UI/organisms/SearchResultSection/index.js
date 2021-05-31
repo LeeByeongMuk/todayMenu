@@ -1,6 +1,5 @@
 import React from 'react';
 import styled from 'styled-components';
-import {PageColor, White, BorderColor} from '../../styles/common/variable.js';
 
 const List = styled.ul`
     display: ${props => props.visibility ? 'block' : 'none'};
@@ -9,8 +8,8 @@ const List = styled.ul`
     left: 0;
     z-index: 10000;
     width: 100%;
-    border: 1px solid ${BorderColor};
-    background: ${White};
+    border: 1px solid #888;
+    background: #fff;
     box-sizing: border-box;
 `;
 
@@ -22,12 +21,12 @@ const ListItem = styled.li`
 
     &:hover {
         text-decoration: underline;
-        background: ${PageColor};
-        color: ${White};
+        background: #2a3b4b;
+        color: #fff;
     }
 `;
 
-class SearchResult extends React.Component {
+class SearchResultSection extends React.Component {
     shouldComponentUpdate(nextProps, nextState) {
         if (this.props.searchResult.length === 0 &&
             nextProps.searchResult.length === 0) {
@@ -62,4 +61,4 @@ class SearchResult extends React.Component {
     }
 }
 
-export default SearchResult;
+export default SearchResultSection;
