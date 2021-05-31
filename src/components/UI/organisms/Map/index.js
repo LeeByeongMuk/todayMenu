@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import {FontColor, PageColor} from "../../../../styles/variable";
+import {FontColor, PageColor} from "../../../constant/Variable";
 
 const MapContainer = styled.article`
     width: 100%;

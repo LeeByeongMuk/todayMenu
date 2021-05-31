@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import styled from "styled-components";
-import {ResetBox} from "../../../styles/grid";
+import {ResetBox} from "../../constant/Grid";
 
 import Map from "../../UI/organisms/Map"
 import MapPanel from "../../UI/organisms/MapPanel";

@@ -1,6 +1,6 @@
 import React, {memo} from "react";
 import styled from 'styled-components';
-import {FontColor} from "../../../../styles/variable";
+import {FontColor} from "../../../constant/Variable";
 
 const styledInput = styled.input`
     padding-left: 10px;

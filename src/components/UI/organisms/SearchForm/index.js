@@ -1,6 +1,6 @@
 import React, {PureComponent} from 'react';
 import styled from 'styled-components';
-import {ResetBox} from "../../../../styles/grid";
+import {ResetBox} from "../../../constant/Grid";
 import Input from "../../atoms/Input";
 import Button from "../../atoms/Button";
 
