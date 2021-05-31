@@ -1,9 +1,9 @@
 import React, {Component} from "react";
 import styled from "styled-components";
-import {ResetBox} from "../../styles/grid";
+import {ResetBox} from "../../../styles/common/grid";
 
-import Map from './Map';
-import MapPanel from "./MapPanel";
+import Map from "../../UI/organisms/Map"
+import MapPanel from "../../UI/organisms/MapPanel";
 
 const Container = styled.div`
     ${ResetBox};
