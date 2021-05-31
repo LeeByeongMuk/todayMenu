@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import {PageColor, White, BorderColor} from '../../styles/variable.js';
+import {PageColor, White, BorderColor} from '../../styles/common/variable.js';
 
 const List = styled.ul`
     display: ${props => props.visibility ? 'block' : 'none'};

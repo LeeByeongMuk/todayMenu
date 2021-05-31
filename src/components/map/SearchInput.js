@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import {ResetInput} from '../../styles/input.js';
+import {ResetInput} from '../../styles/common/input.js';
 
 // css
 import {BorderColor} from '../../styles/variable.js';
