@@ -5,10 +5,10 @@ import Icon from "../../atoms/Icon";
 const IconButton = memo(({
     buttonProps, iconProps
 }) => {
-    const icon = <Icon {...iconProps} />
+    const StyledIcon = <Icon {...iconProps} />
     return (
         <Button {...buttonProps}
-                children={icon}/>
+                children={StyledIcon}/>
     )
 });
 
