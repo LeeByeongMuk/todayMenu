@@ -11,10 +11,9 @@ const styles = css`
 
 const StyledButton = styled.button`${styles}`;
 
-const Button = memo(({children, onClick, ...props}) => {
+const Button = memo(({children, ...props}) => {
     return (
-        <StyledButton {...props}
-                      onClick={onClick}>
+        <StyledButton {...props}>
             {children}
         </StyledButton>
     );
