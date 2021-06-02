@@ -18,6 +18,7 @@ const RightPanelWrapper = styled.section`
     button {
         overflow: hidden;
         position: relative;
+        width: 100%;
         height: 48px;
         border: 1px solid #888;
         border-radius: 3px;
@@ -44,7 +45,6 @@ const BottomPanelWrapper = styled.article`
 `;
 
 const SetCircleController = styled.article`
-    overflow: hidden;
     display: flex;
     flex-direction: column;
     width: 48px;
@@ -55,8 +55,11 @@ const SetCircleController = styled.article`
     }
 `;
 
-const optionDefault = ({buttonProps, iconProps}) => {
+const optionDefault = ({tooltipProps, buttonProps, iconProps}) => {
     return {
+        tooltipProps: {
+            ...tooltipProps
+        },
         buttonProps: {
             type: 'button',
             ...buttonProps
@@ -75,6 +78,9 @@ const MapPanel = memo(({
    increaseCircleRadius
 }) => {
     const ResetLocationOptions = optionDefault({
+        tooltipProps: {
+            text: '위치 재설정'
+        },
         buttonProps: {
             onClick: resetLocation
         },
@@ -83,6 +89,9 @@ const MapPanel = memo(({
         }
     });
     const IncreaseCircleRadiusOptions = optionDefault({
+        tooltipProps: {
+            text: '검색 범위'
+        },
         buttonProps: {
             onClick: increaseCircleRadius
         },
@@ -102,17 +111,11 @@ const MapPanel = memo(({
     return (
         <>
             <RightPanelWrapper>
-                <IconButton onClick={resetLocation}
-                            iconProps={ResetLocationOptions.iconProps}
-                            buttonProps={ResetLocationOptions.buttonProps} />
+                <IconButton {...ResetLocationOptions} />
 
                 <SetCircleController>
-                    <IconButton onClick={increaseCircleRadius}
-                                iconProps={IncreaseCircleRadiusOptions.iconProps}
-                                buttonProps={IncreaseCircleRadiusOptions.buttonProps} />
-                    <IconButton onClick={decreaseCircleRadius}
-                                iconProps={DecreaseCircleRadiusBtnOptions.iconProps}
-                                buttonProps={DecreaseCircleRadiusBtnOptions.buttonProps} />
+                    <IconButton {...IncreaseCircleRadiusOptions} />
+                    <IconButton {...DecreaseCircleRadiusBtnOptions}/>
                 </SetCircleController>
             </RightPanelWrapper>
 
