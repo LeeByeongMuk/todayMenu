@@ -91,6 +91,10 @@ class Map extends React.Component {
                     level: this.props.level
                 };
 
+                if (locPosition.Ma === this.props.lat && locPosition.La === this.props.lng) {
+                    alert('현재 위치를 가져올 수 없습니다.\ngps 설정을 확인해 주세요.');
+                }
+
                 this.map = new window.kakao.maps.Map(container, options); // map 초기화
                 this.props.changeLocation({
                     lat: locPosition.Ma,
