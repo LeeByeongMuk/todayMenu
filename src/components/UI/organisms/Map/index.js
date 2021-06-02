@@ -182,9 +182,10 @@ class Map extends React.Component {
         marker.setVisible(visible);
 
         // TODO:
-        const content = `<div style="max-width: 280px; padding: 5px 10px; border: 1px solid rgb(118, 129, 168); background: #fff; font-size: 14px; line-height: 24px; color: ${FontColor}; text-align: center; word-break: keep-all">
-            <a href="${place.place_url}" style="font-weight: bold; font-size: 16px; color: ${PageColor}" target="_blank">
-                ${place.place_name}
+        const content = `<div style="padding: 5px 10px; border: 1px solid rgb(118, 129, 168); background: #fff; font-size: 14px; line-height: 24px; color: ${FontColor}; text-align: center; word-break: keep-all">
+            <a href="${place.place_url}" style="font-weight: bold; font-size: 16px; color: ${PageColor}; text-decoration: none" target="_blank">
+                ${place.place_name} 
+                <img src="/images/link_icon.png" style="vertical-align: top" width="22">
             </a>
         </div>`;
 
