@@ -14,12 +14,13 @@ const Container = styled.div`
 class MapLayout extends Component {
     map = React.createRef();
 
+    // TODO: 추후 수정
     state = {
-        lat: 33.450701,
-        lng: 126.570667,
+        lat: 37.565751602609616,
+        lng: 126.97746620039706,
         center: {
-            lat: 33.450701,
-            lng: 126.570667
+            lat: 37.565751602609616,
+            lng: 126.97746620039706
         },
         level: 4,
         radius: 200
